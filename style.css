@@ -1,0 +1,346 @@
+/* === Allgemein === */
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #EAFFE6;
+    margin: 0;
+    padding: 0;
+    color: #00005D;
+    font-size: 18pt;
+  }
+  
+  h1, h2, h3 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+  }
+  
+  h1 { font-size: 32pt; }
+  h2 { font-size: 26pt; }
+  h3 { font-size: 22pt; }
+  
+  header {
+    background-color: #533DF6;
+    height: 197px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  main.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 128px 20px 38px 20px;
+    margin: 0 auto;
+    max-width: 1100px;
+  }
+  
+  .intro {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  
+  .intro-text {
+    max-width: 60%;
+  }
+  
+  .intro-text h2 {
+    margin-top: 0;
+  }
+  
+  .intro ol {
+    padding-left: 1.5rem;
+  }
+  
+  .intro ol li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .highlight-green {
+    color: #3CF417;
+    font-weight: bold;
+  }
+  
+  .intro img {
+    max-width: 35%;
+    height: auto;
+  }
+  
+  .btn-primary {
+    background-color: #3CF417;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 18pt;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: bold;
+  }
+  
+  .btn-primary:hover {
+    background-color: #533DF6;
+    color: white;
+  }
+  
+  .status-box,
+  .history-box,
+  .monthly-stats {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 2rem 2.5rem;
+    margin-top: 2rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .next-intake {
+    background-color: #533DF6;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 18pt;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .fach-status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    text-align: center;
+  }
+  
+  .fach {
+    border: 3px solid #533DF6;
+    border-radius: 12px;
+    padding: 1rem;
+    flex: 1 1 45%;
+    font-weight: bold;
+    min-width: 120px;
+    background-color: white;
+  }
+  
+  .fach.green { color: #3CF417; }
+  .fach.orange { color: #FFA500; }
+  .fach.red { color: red; }
+  .fach.blue { color: #00BFFF; }
+  .fach.grey { color: #999; }
+  
+  .history-box > div,
+  .monthly-stats > div {
+    height: 260px;
+  }
+  
+  #verlaufChart,
+  #statsChart {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+  }
+  
+  .legend {
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+  
+  .legend .circle {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+    border: 1px solid #ccc;
+  }
+  
+  .circle.green { background-color: #4caf50; }
+  .circle.yellow { background-color: #ffeb3b; }
+  .circle.red { background-color: #f44336; }
+  .circle.no-med { background-color: #ffffff; }
+  .circle.future { background-color: #e0e0e0; }
+  
+  .popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    color: #00005D;
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.35);
+    z-index: 1000;
+    animation: fadeIn 0.4s ease-in-out;
+    width: 90%;
+    max-width: 550px;
+  }
+  
+  .popup form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  
+  .popup label {
+    font-weight: bold;
+    margin-bottom: 0.4rem;
+    display: block;
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  .popup input,
+  .popup select {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+    color: #00005D;
+  }
+  
+  .wochentage-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+  }
+  
+  .wochentage-grid div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f0f0ff;
+    padding: 0.5rem 0.7rem;
+    border-radius: 10px;
+    color: #00005D;
+    border: 1px solid #ddd;
+  }
+  
+  .wochentage-grid label {
+    flex: 1;
+    margin-right: 0.5rem;
+    font-weight: 600;
+  }
+  
+  .wochentage-grid input[type="time"] {
+    flex: 1.3;
+    padding: 0.4rem 0.6rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    background-color: #ffffff;
+    color: #00005D;
+  }
+  
+  .btn-primary,
+  .close-btn {
+    padding: 0.75rem 1.2rem;
+    font-size: 1rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .btn-primary {
+    background-color: #3CF417;
+    color: #00005D;
+  }
+  
+  .btn-primary:hover {
+    background-color: #533DF6;
+    color: white;
+  }
+  
+  .close-btn {
+    background-color: #eee;
+    color: #00005D;
+  }
+  
+  .close-btn:hover {
+    background-color: #ccc;
+  }
+  
+  footer {
+    background-color: #533DF6;
+    color: #3CF417;
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .success-text {
+    font-size: 1.2rem;
+    color: green;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .fade-in {
+    animation: fadein 0.5s ease-in;
+  }
+  
+  @keyframes fadein {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* Toggle Button */
+  .toggle-container {
+    text-align: right;
+    margin-top: -20px;
+    margin-bottom: 20px;
+  }
+  
+  .toggle-button {
+    background-color: #3CF417;
+    color: #00005D;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  
+  .toggle-button:hover {
+    background-color: #533DF6;
+    color: white;
+  }
+  
+  #verlaufSection,
+  #statistikSection {
+    display: none;
+  }
+  
+  #verlaufSection.active,
+  #statistikSection.active {
+    display: block;
+  }
+  
+  .motivation {
+    margin-top: 2rem;
+    background-color: #f0f8ff;
+    border-left: 6px solid #3CF417;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-style: italic;
+    border-radius: 12px;
+    text-align: center;
+    color: #00005D;
+  }
+  

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PILLO – Medikamentenhilfe</title>
+
+  <!-- Fonts & CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <img src="Logo.png" alt="Logo von Pillo" style="height: 57px; border-radius: 16px;">
+  </header>
+
+  <main class="container">
+    <!-- Intro -->
+    <section class="intro">
+      <div class="intro-text">
+        <h2>Deine tägliche Medikamentenhilfe – Zuverlässig & einfach.</h2>
+        <p><strong>Die smarte Medikamentenbox mit Web-Erinnerung & Notfallfunktion</strong></p>
+        <ol>
+          <li><strong>Medikamente eintragen:</strong> Uhrzeit, Fach und Wochentage festlegen.</li>
+          <li><strong>Display zeigt, was als Nächstes dran ist:</strong> z. B. 12:00 – Fach 2 – Blutdruckmedikament.</li>
+          <li><strong>Fach öffnen – Einnahme erfolgt.</strong></li>
+          <li><strong>Vergessen?</strong> Du wirst automatisch erinnert.</li>
+          <li><strong>Alles im Blick:</strong> Einnahmen farblich <span class="highlight-green">markiert</span>.</li>
+        </ol>
+        <button class="btn-primary" onclick="openPopup()">Medikamente eintragen</button>
+      </div>
+      <img src="Gadget.png" alt="Medikamentenbox">
+    </section>
+
+    <!-- Nächste Einnahme + Status -->
+    <section class="status-box">
+      <h3>Nächste Einnahme</h3>
+      <div class="next-intake" id="naechste-einnahme">Wird geladen...</div>
+
+      <h3>Einnahmestatus</h3>
+      <div class="fach-status" id="einnahme-status"></div>
+    </section>
+
+    <!-- Einnahmeverlauf -->
+    <section class="history-box">
+      <h3>Einnahmeverlauf (diese Woche)</h3>
+      <div class="toggle-wrapper">
+        <label class="toggle-label" for="toggleChart">Ansicht:</label>
+        <select id="toggleChart" onchange="switchChartView()">
+          <option value="week">Wochenverlauf</option>
+          <option value="month">Monatsstatistik</option>
+        </select>
+      </div>
+      <div id="chart-container">
+        <canvas id="verlaufChart"></canvas>
+      </div>
+      <div class="legend">
+        <p>
+          <span class="circle green"></span> pünktlich
+          <span class="circle yellow"></span> verspätet
+          <span class="circle red"></span> nicht eingenommen
+          <span class="circle no-med"></span> nichts geplant
+          <span class="circle future"></span> zukünftig
+        </p>
+      </div>
+    </section>
+
+    <!-- Statistikansicht -->
+    <section class="statistik-box" style="display: none;">
+      <h3>Monatliche Auswertung</h3>
+      <div style="height: 300px;">
+        <canvas id="monatsChart"></canvas>
+      </div>
+      <div class="facts" style="margin-top: 1rem; text-align: center;">
+        <p><strong>💪 Weiter so!</strong> Deine Disziplin zahlt sich aus.</p>
+        <p><strong>📈 Tipp:</strong> Schon 90 % Regelmäßigkeit verbessert die Wirkung erheblich!</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Pop-up Formular -->
+  <div class="popup" id="popupForm">
+    <form id="medForm" action="submit_medikament.php" method="post" onsubmit="return handleFormSubmit(event)">
+      <label for="fach">Fach:</label>
+      <select name="fach" id="fach" required>
+        <option value="Fach 1">Fach 1</option>
+        <option value="Fach 2">Fach 2</option>
+      </select>
+
+      <label for="medi_name">Medikamentenname:</label>
+      <input type="text" name="medi_name" id="medi_name" required>
+
+      <label>Geplante Einnahmen (optional je Wochentag):</label>
+      <div class="wochentage-grid">
+        <div><label for="mo">Mo:</label><input type="time" name="zeiten[MO]" id="mo"></div>
+        <div><label for="di">Di:</label><input type="time" name="zeiten[DI]" id="di"></div>
+        <div><label for="mi">Mi:</label><input type="time" name="zeiten[MI]" id="mi"></div>
+        <div><label for="do">Do:</label><input type="time" name="zeiten[DO]" id="do"></div>
+        <div><label for="fr">Fr:</label><input type="time" name="zeiten[FR]" id="fr"></div>
+        <div><label for="sa">Sa:</label><input type="time" name="zeiten[SA]" id="sa"></div>
+        <div><label for="so">So:</label><input type="time" name="zeiten[SO]" id="so"></div>
+      </div>
+
+      <label for="notfall_nummer">Notfallnummer:</label>
+      <input type="text" name="notfall_nummer" id="notfall_nummer">
+
+      <button class="btn-primary" type="submit">Änderungen speichern</button>
+      <button class="close-btn" type="button" onclick="closePopup()">Abbrechen</button>
+    </form>
+  </div>
+
+  <footer>
+    &copy; 2025 Luca Genini
+  </footer>
+
+  <!-- Chart.js & Matrix Plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.1.0/dist/chartjs-chart-matrix.min.js"></script>
+
+  <!-- Haupt-JavaScript -->
+  <script src="atlas.js"></script>
+  <script>
+    function openPopup() {
+      const popup = document.getElementById('popupForm');
+      popup.style.display = 'block';
+      document.getElementById('medi_name').focus();
+    }
+
+    function closePopup() {
+      const popup = document.getElementById('popupForm');
+      popup.style.display = 'none';
+      document.getElementById('medForm').reset();
+    }
+
+    function handleFormSubmit(event) {
+      return true;
+    }
+  </script>
+</body>
+</html>
