@@ -5,24 +5,20 @@ require_once 'config.php';
 date_default_timezone_set("Europe/Zurich");
 
 function mapDayToDE($dayEN) {
-    $map = [
+    return [
         'MON' => 'MO', 'TUE' => 'DI', 'WED' => 'MI',
         'THU' => 'DO', 'FRI' => 'FR', 'SAT' => 'SA', 'SUN' => 'SO'
-    ];
-    return $map[$dayEN] ?? $dayEN;
+    ][$dayEN] ?? $dayEN;
 }
 
 function getCurrentWeekDates() {
-    $monday = new DateTime();
-    $monday->modify('monday this week');
+    $start = new DateTime();
+    $start->modify('monday this week');
     $week = [];
     for ($i = 0; $i < 7; $i++) {
-        $day = clone $monday;
-        $day->modify("+$i days");
-        $week[] = [
-            'tag' => mapDayToDE(strtoupper($day->format('D'))),
-            'datum' => $day->format('Y-m-d')
-        ];
+        $date = clone $start;
+        $date->modify("+$i days");
+        $week[] = ['tag' => mapDayToDE(strtoupper($date->format('D'))), 'datum' => $date->format('Y-m-d')];
     }
     return $week;
 }
@@ -32,73 +28,70 @@ function getHistory($pdo) {
     $result = [];
 
     foreach ([1, 2] as $fach) {
-        $wochenStatus = [];
+        $statusArray = [];
 
         foreach ($tage as $tagInfo) {
             $tag = $tagInfo['tag'];
             $datum = $tagInfo['datum'];
+            $jetzt = new DateTime();
 
-            $sqlPlan = "SELECT id, uhrzeit, created_at FROM medication_schedule 
-                        WHERE fach_nr = :fach AND wochentag = :tag AND status = 'voll'";
-            $stmt = $pdo->prepare($sqlPlan);
+            $stmt = $pdo->prepare("
+                SELECT id, uhrzeit, created_at
+                FROM medication_schedule
+                WHERE fach_nr = :fach AND wochentag = :tag AND status = 'voll'
+            ");
             $stmt->execute(['fach' => $fach, 'tag' => $tag]);
             $plaene = $stmt->fetchAll();
 
-            if (count($plaene) === 0) {
-                $wochenStatus[] = "no-med";
+            if (!$plaene) {
+                $statusArray[] = "no-med";
                 continue;
             }
 
-            $statusFeld = "future";
-            $jetzt = new DateTime();
+            $color = "future";
 
             foreach ($plaene as $plan) {
-                $created = new DateTime($plan['created_at']);
                 $soll = new DateTime($datum . ' ' . $plan['uhrzeit']);
-
+                $created = new DateTime($plan['created_at']);
                 if ($created > $soll) {
-                    $statusFeld = "no-med";
+                    $color = "no-med";
                     continue;
                 }
 
                 if ($soll > $jetzt) {
-                    $statusFeld = "future";
+                    $color = "future";
                     continue;
                 }
 
-                $sqlLog = "SELECT timestamp FROM medication_log 
-                           WHERE fach_nr = :fach AND DATE(timestamp) = :datum AND plan_id = :plan_id";
-                $stmt2 = $pdo->prepare($sqlLog);
+                $stmt2 = $pdo->prepare("
+                    SELECT timestamp FROM medication_log
+                    WHERE fach_nr = :fach AND plan_id = :pid AND DATE(timestamp) = :datum
+                ");
                 $stmt2->execute([
                     'fach' => $fach,
-                    'datum' => $datum,
-                    'plan_id' => $plan['id']
+                    'pid' => $plan['id'],
+                    'datum' => $datum
                 ]);
                 $log = $stmt2->fetch();
 
                 if ($log) {
                     $ist = new DateTime($log['timestamp']);
-                    $diff = abs($soll->getTimestamp() - $ist->getTimestamp());
+                    $diff = abs($ist->getTimestamp() - $soll->getTimestamp());
 
-                    if ($diff <= 600) {
-                        $statusFeld = "green";
-                        break;
-                    } elseif ($diff <= 3600 && $statusFeld !== "green") {
-                        $statusFeld = "yellow";
-                    }
-                } else {
-                    if ($jetzt->getTimestamp() > $soll->getTimestamp() + 3600) {
-                        $statusFeld = "red";
-                    }
+                    if ($diff <= 600) $color = "green";
+                    elseif ($diff <= 3600) $color = "yellow";
+                    else $color = "red";
+                } elseif ($jetzt->getTimestamp() > $soll->getTimestamp() + 3600) {
+                    $color = "red";
                 }
             }
 
-            $wochenStatus[] = $statusFeld;
+            $statusArray[] = $color;
         }
 
         $result[] = [
             'fach' => "Fach $fach",
-            'wochentage' => $wochenStatus
+            'wochentage' => $statusArray
         ];
     }
 
@@ -110,30 +103,31 @@ function getNextIntake($pdo) {
     $cutoff = $now->modify('-30 seconds')->format('Y-m-d H:i:s');
 
     for ($i = 0; $i <= 6; $i++) {
-        $future = (new DateTime())->modify("+{$i} days");
-        $day = mapDayToDE(strtoupper($future->format('D')));
-        $time = ($i === 0) ? date('H:i:s') : '00:00:00';
+        $dayObj = new DateTime("+$i days");
+        $tag = mapDayToDE(strtoupper($dayObj->format('D')));
+        $zeit = ($i === 0) ? date('H:i:s') : '00:00:00';
 
-        $sql = "SELECT * FROM medication_schedule 
-                WHERE wochentag = :day
-                  AND uhrzeit >= :time
-                  AND status = 'voll'
-                  AND (last_taken IS NULL OR last_taken < :date_cutoff)
-                ORDER BY uhrzeit ASC
-                LIMIT 1";
-
-        $stmt = $pdo->prepare($sql);
+        $stmt = $pdo->prepare("
+            SELECT * FROM medication_schedule
+            WHERE wochentag = :tag
+              AND uhrzeit >= :zeit
+              AND status = 'voll'
+              AND (last_taken IS NULL OR last_taken < :cutoff)
+            ORDER BY uhrzeit ASC
+            LIMIT 1
+        ");
         $stmt->execute([
-            'day' => $day,
-            'time' => $time,
-            'date_cutoff' => $cutoff
+            'tag' => $tag,
+            'zeit' => $zeit,
+            'cutoff' => $cutoff
         ]);
 
         if ($row = $stmt->fetch()) {
             return [
                 'fach' => "Fach " . $row['fach_nr'],
                 'uhrzeit' => substr($row['uhrzeit'], 0, 5),
-                'medikament' => $row['med_name']
+                'medikament' => $row['med_name'],
+                'wochentag' => $tag
             ];
         }
     }
@@ -142,20 +136,24 @@ function getNextIntake($pdo) {
 }
 
 function getFachStatus($pdo) {
-    $faecher = [];
-    $jetzt = new DateTime();
+    $result = [];
+    $tage = ['MO','DI','MI','DO','FR','SA','SO'];
 
-    for ($fach = 1; $fach <= 2; $fach++) {
-        $sql = "SELECT * FROM medication_schedule 
-                WHERE fach_nr = :fach AND status = 'voll'";
-        $stmt = $pdo->prepare($sql);
+    foreach ([1, 2] as $fach) {
+        $stmt = $pdo->prepare("
+            SELECT * FROM medication_schedule
+            WHERE fach_nr = :fach AND status = 'voll'
+        ");
         $stmt->execute(['fach' => $fach]);
 
+        $rows = $stmt->fetchAll();
         $found = null;
-        while ($row = $stmt->fetch()) {
-            $tag = $row['wochentag'];
-            $zeit = $row['uhrzeit'];
-            $planDate = new DateTime("last Sunday +" . array_search($tag, ['MO','DI','MI','DO','FR','SA','SO']) . " days " . $zeit);
+        $jetzt = new DateTime();
+
+        foreach ($rows as $row) {
+            $tagIndex = array_search($row['wochentag'], $tage);
+            if ($tagIndex === false) continue;
+            $planDate = new DateTime("last Sunday +$tagIndex days " . $row['uhrzeit']);
             if (empty($row['last_taken']) || new DateTime($row['last_taken']) < $planDate) {
                 $found = $row;
                 break;
@@ -165,76 +163,134 @@ function getFachStatus($pdo) {
         if ($found) {
             $status = "Geplant";
             $farbe = "grey";
-            $text = "Nächste Einnahme: {$found['wochentag']}, " . substr($found['uhrzeit'], 0, 5) . " – {$found['med_name']}";
+            $zeit = "{$found['wochentag']}, " . substr($found['uhrzeit'], 0, 5) . " – {$found['med_name']}";
 
             if (!empty($found['last_taken'])) {
-                $lastTaken = new DateTime($found['last_taken']);
-                if ((new DateTime())->getTimestamp() - $lastTaken->getTimestamp() < 15) {
+                $last = new DateTime($found['last_taken']);
+                if ($jetzt->getTimestamp() - $last->getTimestamp() < 15) {
                     $status = "Eingenommen";
                     $farbe = "green";
-                    $text = $lastTaken->format("H:i") . " – Eingenommen";
+                    $zeit = $last->format("H:i") . " – Eingenommen";
                 }
             }
         } else {
             $status = "Nicht geplant";
             $farbe = "grey";
-            $text = "Keine Einnahme geplant";
+            $zeit = "Keine Einnahme geplant";
         }
 
-        $faecher[] = [
+        $result[] = [
             'fach' => "Fach $fach",
             'status' => $status,
-            'zeit' => $text,
+            'zeit' => $zeit,
             'statusFarbe' => $farbe
         ];
     }
 
-    return $faecher;
+    return $result;
 }
 
-function getPlanned($pdo) {
-    $sql = "SELECT fach_nr AS fach, med_name AS medikament, uhrzeit, wochentag FROM medication_schedule WHERE status = 'voll'";
-    return $pdo->query($sql)->fetchAll();
-}
-
-function getMonatsStatistik($pdo) {
-    $fach1 = [];
-    $fach2 = [];
-    $monate = [];
-
+function getMonthlyStats($pdo) {
+    $result = [];
     for ($i = 11; $i >= 0; $i--) {
-        $start = new DateTime("first day of -$i months");
-        $end = new DateTime("last day of -$i months");
-        $monat = $start->format("M Y");
-        $monate[] = $monat;
+        $start = (new DateTime("first day of -$i month"))->format("Y-m-01");
+        $end = (new DateTime("last day of -$i month"))->format("Y-m-t");
+        $label = (new DateTime($start))->format("M Y");
 
+        $entry = ['monat' => $label];
         foreach ([1, 2] as $fach) {
-            $stmt = $pdo->prepare("SELECT COUNT(*) as total, 
-                SUM(CASE WHEN TIMESTAMPDIFF(SECOND, s.uhrzeit, l.timestamp) <= 3600 THEN 1 ELSE 0 END) as korrekt
-                FROM medication_schedule s
-                LEFT JOIN medication_log l ON s.id = l.plan_id AND MONTH(l.timestamp) = :month AND YEAR(l.timestamp) = :year
-                WHERE s.fach_nr = :fach AND MONTH(s.created_at) <= :month AND s.status = 'voll'");
-
-            $stmt->execute([
-                'month' => (int)$start->format('m'),
-                'year' => (int)$start->format('Y'),
-                'fach' => $fach
-            ]);
+            $stmt = $pdo->prepare("
+                SELECT COUNT(*) as total,
+                       SUM(CASE WHEN korrekt = 1 THEN 1 ELSE 0 END) as korrekt
+                FROM medication_log
+                WHERE fach_nr = :fach AND DATE(timestamp) BETWEEN :start AND :end
+            ");
+            $stmt->execute(['fach' => $fach, 'start' => $start, 'end' => $end]);
             $row = $stmt->fetch();
-            $percent = ($row['total'] > 0) ? round(($row['korrekt'] / $row['total']) * 100) : 0;
-
-            if ($fach === 1) $fach1[] = $percent;
-            else $fach2[] = $percent;
+            $entry["fach$fach"] = ($row['total'] > 0) ? round($row['korrekt'] / $row['total'] * 100) : 0;
         }
+
+        $result[] = $entry;
     }
 
-    return [
-        'monate' => $monate,
-        'fach1' => $fach1,
-        'fach2' => $fach2
-    ];
+    return $result;
 }
 
+function getWeeklyStats($pdo) {
+    $result = [];
+    $today = new DateTime();
+
+    for ($i = 3; $i >= 0; $i--) {
+        $start = clone $today;
+        $start->modify("-$i week")->modify('monday this week');
+        $end = clone $start;
+        $end->modify('sunday this week');
+
+        $label = "KW " . $start->format("W");
+        $entry = ['kw' => $label];
+
+        foreach ([1, 2] as $fach) {
+            $stmt = $pdo->prepare("
+                SELECT COUNT(*) as total,
+                       SUM(CASE WHEN korrekt = 1 THEN 1 ELSE 0 END) as korrekt
+                FROM medication_log
+                WHERE fach_nr = :fach
+                  AND DATE(timestamp) BETWEEN :start AND :end
+            ");
+            $stmt->execute([
+                'fach' => $fach,
+                'start' => $start->format("Y-m-d"),
+                'end' => $end->format("Y-m-d")
+            ]);
+            $row = $stmt->fetch();
+
+            // DEBUG
+            error_log("📊 $label | Fach $fach | {$start->format('Y-m-d')} - {$end->format('Y-m-d')} | Total: {$row['total']} | Korrekt: {$row['korrekt']}");
+
+            $entry["fach$fach"] = ($row['total'] > 0) ? round($row['korrekt'] / $row['total'] * 100) : 0;
+        }
+
+        $result[] = $entry;
+    }
+
+    return $result;
+}
+
+function getMotivation($pdo) {
+    $infos = [];
+    foreach ([1, 2] as $fach) {
+        $stmt = $pdo->prepare("
+            SELECT DATE(timestamp) as datum, korrekt
+            FROM medication_log
+            WHERE fach_nr = :fach
+            ORDER BY timestamp DESC
+        ");
+        $stmt->execute(['fach' => $fach]);
+        $logs = $stmt->fetchAll();
+
+        $streak = 0;
+        $heute = new DateTime();
+        $heute->setTime(0, 0);
+
+        foreach ($logs as $log) {
+            $logDate = new DateTime($log['datum']);
+            $logDate->setTime(0, 0);
+
+            if ($logDate == $heute && (int)$log['korrekt'] === 1) {
+                $streak++;
+                $heute->modify('-1 day');
+            } elseif ($logDate < $heute) {
+                break;
+            }
+        }
+
+        $infos[] = "Fach $fach: $streak Tage ohne Aussetzer 🎯";
+    }
+
+    return $infos;
+}
+
+// === JSON-Ausgabe ===
 try {
     $pdo = new PDO($dsn, $db_user, $db_pass, $options);
 
@@ -242,10 +298,10 @@ try {
         'naechste' => getNextIntake($pdo),
         'fach_status' => getFachStatus($pdo),
         'verlauf' => getHistory($pdo),
-        'geplant' => getPlanned($pdo),
-        'monatsstatistik' => getMonatsStatistik($pdo)
+        'monatsstatistik' => getMonthlyStats($pdo),
+        'wochenstatistik' => getWeeklyStats($pdo),
+        'motivation' => getMotivation($pdo)
     ]);
-
 } catch (PDOException $e) {
-    echo json_encode(['error' => 'DB Fehler: ' . $e->getMessage()]);
+    echo json_encode(['error' => $e->getMessage()]);
 }
