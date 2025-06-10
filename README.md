@@ -65,7 +65,8 @@ Innert der aktuellen Woche sieht man auch immer den aktuellen Plan, welches Medi
 ---
 
 ## 🔄 Flussdiagramm
-[Pillo.pdf](https://github.com/user-attachments/files/20678275/Pillo.pdf)
+
+![Screenflow](https://github.com/user-attachments/assets/68f54622-40ea-4e81-a5e2-a8ce419c0432)
 *Das Diagramm zeigt die Kommunikationswege zwischen ESP32, Website und Server.*
 
 ---
