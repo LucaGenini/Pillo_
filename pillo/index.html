@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PILLO – Medikamentenhilfe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <img src="pictures/Logo.png" alt="Logo von Pillo" style="height: 57px; border-radius: 16px;">
+  </header>
+
+  <main class="container">
+    <section class="intro">
+      <div class="intro-text">
+        <h2>eine tägliche Medikamentenhilfe – Zuverlässig & einfach.</h2>
+        <p><strong>Die smarte Medikamentenbox mit Web-Erinnerung & Notfallfunktion</strong></p>
+        <ol>
+          <li><strong>Medikamente eintragen:</strong> Uhrzeit, Fach und Wochentage festlegen.</li>
+          <li><strong>Display zeigt, was als Nächstes dran ist:</strong> z. B. 12:00 – Fach 2 – Blutdruckmedikament.</li>
+          <li><strong>Fach öffnen – Einnahme erfolgt.</strong></li>
+          <li><strong>Vergessen?</strong> Du wirst automatisch erinnert.</li>
+          <li><strong>Alles im Blick:</strong> Einnahmen farblich <span class="highlight-green">markiert</span>.</li>
+        </ol>
+        <button class="btn-primary" onclick="openPopup()">Medikamente eintragen</button>
+      </div>
+      <img src="pictures/Gadget.png" alt="Medikamentenbox">
+    </section>
+
+    <section class="status-box">
+      <h3>Nächste Einnahme</h3>
+      <div class="next-intake" id="naechste-einnahme">Wird geladen...</div>
+
+      <h3>Einnahmestatus</h3>
+      <div class="fach-status" id="einnahme-status"></div>
+    </section>
+
+    <!-- Neuer Statistikbereich -->
+    <section class="history-box">
+        <h3>Einnahmeverlauf (diese Woche)</h3>
+        <div class="chart-container">
+          <canvas id="verlaufChart"></canvas>
+        </div>
+      
+        <div style="margin-top: 2rem;">
+          <div class="toggle-buttons">
+            <button onclick="switchStats('monat')" class="btn-primary active" id="btn-monat">Monatsstatistik</button>
+            <button onclick="switchStats('jahr')" class="btn-primary" id="btn-jahr">Jahresstatistik</button>
+          </div>
+      
+          <div id="monatsansicht" class="chart-container">
+            <canvas id="wochenStackedChart"></canvas>
+          </div>
+      
+          <div id="jahresansicht" class="chart-container" style="display: none;">
+            <canvas id="jahresStackedChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+    <!-- Pop-up Formular -->
+    <div class="popup" id="popupForm">
+      <form id="medForm" action="submit_medikament.php" method="post" onsubmit="return handleFormSubmit(event)">
+        <label for="fach">Fach:</label>
+        <select name="fach" id="fach" required>
+          <option value="Fach 1">Fach 1</option>
+          <option value="Fach 2">Fach 2</option>
+        </select>
+
+        <label for="medi_name">Medikamentenname:</label>
+        <input type="text" name="medi_name" id="medi_name" required>
+
+        <label>Geplante Einnahmen:</label>
+        <div class="wochentage-grid">
+          <div><label for="mo">Mo:</label><input type="time" name="zeiten[MO]" id="mo"></div>
+          <div><label for="di">Di:</label><input type="time" name="zeiten[DI]" id="di"></div>
+          <div><label for="mi">Mi:</label><input type="time" name="zeiten[MI]" id="mi"></div>
+          <div><label for="do">Do:</label><input type="time" name="zeiten[DO]" id="do"></div>
+          <div><label for="fr">Fr:</label><input type="time" name="zeiten[FR]" id="fr"></div>
+          <div><label for="sa">Sa:</label><input type="time" name="zeiten[SA]" id="sa"></div>
+          <div><label for="so">So:</label><input type="time" name="zeiten[SO]" id="so"></div>
+        </div>
+
+        <label for="notfall_nummer">Notfallnummer:</label>
+        <input type="text" name="notfall_nummer" id="notfall_nummer">
+
+        <button class="btn-primary" type="submit">Änderungen speichern</button>
+        <button class="close-btn" type="button" onclick="closePopup()">Abbrechen</button>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Luca Genini
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.1.0/dist/chartjs-chart-matrix.min.js"></script>
+  <script src="geladen.js"></script>
+</body>
+</html>
