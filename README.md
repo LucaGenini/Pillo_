@@ -6,7 +6,7 @@
 
 ## 📦 Inhaltsverzeichnis
 
-- [ 📝 Projektbeschreibung](#projektbeschreibung)
+- [Projektbeschreibung](#projektbeschreibung)
 - [Reproduzierbarkeit](#reproduzierbarkeit)
 - [Flussdiagramm](#flussdiagramm)
 - [Komponentenplan](#komponentenplan)
@@ -18,7 +18,7 @@
 
 ---
 
-## 📝 Projektbeschreibung
+## Projektbeschreibung
 
 Pillo ist eine Website, bei der man seine Medikamenteneinnahme tracken kann.
 
