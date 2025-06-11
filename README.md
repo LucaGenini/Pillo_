@@ -6,7 +6,7 @@
 
 ## 📦 Inhaltsverzeichnis
 
-- [📝Projektbeschreibung](#projektbeschreibung)
+- [📝 Projektbeschreibung](#projektbeschreibung)
 - [Reproduzierbarkeit](#reproduzierbarkeit)
 - [Flussdiagramm](#flussdiagramm)
 - [Komponentenplan](#komponentenplan)
