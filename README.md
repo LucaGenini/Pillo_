@@ -7,14 +7,14 @@
 ## 📦 Inhaltsverzeichnis
 
 - [📝 Projektbeschreibung](#projektbeschreibung)
-- [Reproduzierbarkeit](#reproduzierbarkeit)
-- [Flussdiagramm](#flussdiagramm)
-- [Komponentenplan](#komponentenplan)
-- [Steckschema](#steckschema)
-- [Screenshots / Medien](#screenshots--medien)
-- [Umsetzungsprozess](#umsetzungsprozess)
-- [Video-Dokumentation](#video-dokumentation)
-- [Lernfortschritt](#lernfortschritt)
+- [🔁 Reproduzierbarkeit](#reproduzierbarkeit)
+- [🔄 Flussdiagramm](#flussdiagramm)
+- [🔧 Komponentenplan](#komponentenplan)
+- [🧩 Steckschema](#steckschema)
+- [🖼️ Screenshots / Medien](#screenshots--medien)
+- [⚙️ Umsetzungsprozess](#umsetzungsprozess)
+- [🎥 Video-Dokumentation](#video-dokumentation)
+- [📚 Lernfortschritt](#lernfortschritt)
 
 ---
 
@@ -35,7 +35,7 @@ Innert der aktuellen Woche sieht man auch immer den aktuellen Plan, welches Medi
 
 ---
 
-## 🔁 Reproduzierbarkeit
+## 🔁Reproduzierbarkeit
 
 **Folge dieser Schritt-für-Schritt-Anleitung**, um das Projekt nachzubauen:
 
@@ -64,28 +64,28 @@ Innert der aktuellen Woche sieht man auch immer den aktuellen Plan, welches Medi
 
 ---
 
-## 🔄 Flussdiagramm
+## 🔄Flussdiagramm
 
 ![Screenflow](https://github.com/user-attachments/assets/68f54622-40ea-4e81-a5e2-a8ce419c0432)
 *Das Diagramm zeigt die Kommunikationswege zwischen ESP32, Website und Server.*
 
 ---
 
-## 🔧 Komponentenplan
+## 🔧Komponentenplan
 
 ![Komponentenplan](https://github.com/user-attachments/assets/e54be341-70cc-4e0a-91e9-0666d4949830)
 *Verbindungen und Protokolle zwischen haptischen Komponenten und digitalen Modulen.*
 
 ---
 
-## 🧩 Steckschema
+## 🧩Steckschema
 
 ![Steckplan](https://github.com/user-attachments/assets/b0e210c0-8eb5-4ff1-9236-5de2e835f993)
 *Das Breadboard-Schema zeigt den Aufbau mit ESP32 und Sensoren.*
 
 ---
 
-## 🖼️ Screenshots / Medien
+## 🖼️Screenshots / Medien
 
 _Füge hier Screenshots oder GIFs ein, z. B.:_
 
@@ -96,3 +96,15 @@ _Füge hier Screenshots oder GIFs ein, z. B.:_
 ```markdown
 ![Weboberfläche](./assets/webui.png)
 ![OLED Screenshot](./assets/oled_display.jpg)
+
+---
+
+## ⚙️Umsetzungsprozess
+
+---
+
+## 🎥 Video-Dokumentation
+
+---
+
+## 📚 Lernfortschritt
