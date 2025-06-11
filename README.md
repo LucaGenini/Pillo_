@@ -13,8 +13,18 @@
 - [🧩 Steckschema](#steckschema)
 - [🖼️ Screenshots / Medien](#screenshots--medien)
 - [⚙️ Umsetzungsprozess](#umsetzungsprozess)
+  - [🔧 Entwicklungsprozess](#-entwicklungsprozess)
+  - [🗺️ Inspirationen & Ziele](#️-inspirationen--ziele)
+  - [🎨 Designentscheidungen](#-designentscheidungen)
+  - [🚫 Verworfene Lösungsansätze](#-verworfene-lösungsansätze)
+  - [🔄 Fehlschläge und Umplanung](#-fehlschläge-und-umplanung)
+  - [🧱 Planung & Aufgabenverteilung](#-planung--aufgabenverteilung)
+  - [🧠 Lerneffekt](#-lerneffekt)
+  - [🐞 Known Bugs](#-known-bugs)
+  - [🧰 Hilfsmittel & Tools](#-hilfsmittel--tools)
 - [🎥 Video-Dokumentation](#video-dokumentation)
 - [📚 Fazit](#fazit)
+
 
 ---
 
@@ -85,7 +95,7 @@ Innert der aktuellen Woche sieht man auch immer den aktuellen Plan, welches Medi
 
 ---
 
-## 🖼️ Screenshots / Medien
+## 🖼️Screenshots / Medien
 
 _Füge hier Screenshots oder GIFs ein, z. B.:_
 
@@ -98,13 +108,13 @@ _Füge hier Screenshots oder GIFs ein, z. B.:_
 
 ---
 
-## 🎥 Video-Dokumentation
+## 🎥Video-Dokumentation
 
 ---
 
-## ⚙️ Umsetzungsprozess
+## ⚙️Umsetzungsprozess
 
-### 🔧 Entwicklungsprozess
+### 🔧Entwicklungsprozess
 
 Der Entwicklungsprozess von Pillo erfolgte iterativ – von der Idee über den Hardware-Prototyp bis hin zur vollständigen Integration von Web-Interface, Server und Datenbank. Nach einer ersten Ideensammlung folgte die Modulplanung: Welche Sensoren werden benötigt, welche Logik läuft auf dem ESP32, wie wird die Kommunikation mit dem Server umgesetzt? Parallel dazu wurde die Website als Benutzeroberfläche konzipiert und gestaltet.
 
@@ -116,13 +126,13 @@ Die Entwicklung erfolgte in vier zentralen Bereichen:
 
 ---
 
-### 🗺️ Inspirationen & Ziele
+### 🗺️Inspirationen & Ziele
 
 Die Motivation entstand aus einer persönlichen Erfahrung mit unregelmässiger Medikamenteneinnahme sowie Beobachtungen im familiären Umfeld. Viele Menschen – insbesondere ältere – nehmen Medikamente regelmässig ein, haben jedoch kein System zur Überprüfung oder Erinnerung. Genau dort soll Pillo ansetzen: als einfache, visuelle Hilfe zur Selbsterinnerung und zur Protokollierung der Einnahmen.
 
 ---
 
-### 🎨 Designentscheidungen
+### 🎨Designentscheidungen
 
 - **Benutzeroberfläche reduziert & klar strukturiert**, insbesondere auf Bedienbarkeit durch ältere Nutzerinnen und Nutzer ausgelegt (grosse Schriften, klare Farbcodes, einfache Navigation).
 - **Zwei Sensorarten pro Fach**:  
@@ -133,7 +143,7 @@ Die Motivation entstand aus einer persönlichen Erfahrung mit unregelmässiger M
 
 ---
 
-### 🚫 Verworfene Lösungsansätze
+### 🚫Verworfene Lösungsansätze
 
 - **Nur mit Distanzsensoren zu arbeiten**, ohne Magnetsensor: stellte sich als zu fehleranfällig heraus – Bewegungen vor dem Sensor lösten falsche Einnahmen aus.
 - **Backendlose Lösung** rein auf dem ESP32 und OLED: schränkte Erweiterbarkeit massiv ein, keine Statistikauswertung möglich.
@@ -141,7 +151,7 @@ Die Motivation entstand aus einer persönlichen Erfahrung mit unregelmässiger M
 
 ---
 
-### 🔄 Fehlschläge und Umplanung
+### 🔄Fehlschläge und Umplanung
 
 | Problem | Erkenntnis | Lösung |
 |--------|------------|--------|
@@ -153,7 +163,7 @@ Die Motivation entstand aus einer persönlichen Erfahrung mit unregelmässiger M
 
 ---
 
-### 🧱 Planung & Aufgabenverteilung
+### 🧱Planung & Aufgabenverteilung
 
 Da es sich um ein Einzelprojekt handelte, lagen alle Aufgaben bei mir – von der Konzeption über die Verkabelung, Programmierung, Webentwicklung bis hin zur finalen Dokumentation. Gearbeitet wurde parallel an den Modulen, mit regelmässigen Tests auf funktionierender Hardware.
 
@@ -166,7 +176,7 @@ Ein Projektplan wurde grob in Phasen eingeteilt:
 
 ---
 
-### 🧠 Lerneffekt
+### 🧠Lerneffekt
 
 Dieses Projekt brachte viele neue Herausforderungen, durch die ich wertvolle Erfahrungen gesammelt habe:
 
@@ -179,7 +189,7 @@ Dieses Projekt brachte viele neue Herausforderungen, durch die ich wertvolle Erf
 
 ---
 
-### 🐞 Known Bugs
+### 🐞Known Bugs
 
 - Bei sehr schnellen Öffnungs- und Schliessaktionen **können Logs doppelt erscheinen**, falls das Zeitfenster nicht greift.
 - Die OLED-Anzeige kann **bei langen Medikamentennamen** überlaufen (visuell unsauber).
@@ -188,13 +198,13 @@ Dieses Projekt brachte viele neue Herausforderungen, durch die ich wertvolle Erf
 
 ---
 
-### 🧰 Hilfsmittel & Tools
+### 🧰Hilfsmittel & Tools
 
 | Tool | Zweck |
 |------|-------|
 | **ChatGPT** | Planung, Debugging, Code-Optimierung, README-Struktur |
 | **Fritzing** | Erstellung des Steckschemas |
-| **draw.io** | Erstellung des Systemflussdiagramms |
+| **Figma** | Erstellung des Systemflussdiagramms |
 | **Arduino IDE** | Microcontroller-Programmierung |
 | **PHP + MySQL** | Serverseitige Skripte und Datenhaltung |
 | **Markdown / GitHub** | Projektdokumentation, ReadMe, Versionierung |
@@ -202,7 +212,7 @@ Dieses Projekt brachte viele neue Herausforderungen, durch die ich wertvolle Erf
 
 ---
 
-## 📚 Fazit
+## 📚Fazit
 
 --nfmmhmjjmjgmm
 
