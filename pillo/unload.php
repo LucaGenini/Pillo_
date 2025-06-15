@@ -11,6 +11,43 @@ function mapDayToDE($dayEN) {
     ][$dayEN] ?? $dayEN;
 }
 
+function getNextIntake($pdo) {
+    $now = new DateTime();
+    $cutoff = $now->modify('-30 seconds')->format('Y-m-d H:i:s');
+
+    for ($i = 0; $i <= 6; $i++) {
+        $dayObj = new DateTime("+$i days");
+        $tag = mapDayToDE(strtoupper($dayObj->format('D')));
+        $zeit = ($i === 0) ? date('H:i:s') : '00:00:00';
+
+        $stmt = $pdo->prepare("
+            SELECT * FROM medication_schedule
+            WHERE wochentag = :tag
+              AND uhrzeit >= :zeit
+              AND status = 'voll'
+              AND (last_taken IS NULL OR last_taken < :cutoff)
+            ORDER BY uhrzeit ASC
+            LIMIT 1
+        ");
+        $stmt->execute([
+            'tag' => $tag,
+            'zeit' => $zeit,
+            'cutoff' => $cutoff
+        ]);
+
+        if ($row = $stmt->fetch()) {
+            return [
+                'fach' => "Fach " . $row['fach_nr'],
+                'uhrzeit' => substr($row['uhrzeit'], 0, 5),
+                'medikament' => $row['med_name'],
+                'wochentag' => $tag
+            ];
+        }
+    }
+
+    return null;
+}
+
 function getVerlaufExtended($pdo, $startDate, $endDate) {
     $period = new DatePeriod(
         new DateTime($startDate),
@@ -191,12 +228,7 @@ try {
     $verlaufWeeklyMatrix = getVerlaufWeeklyMatrix($verlaufExtended);
 
     echo json_encode([
-        'naechste' => [
-            'fach' => 'Fach 1',
-            'uhrzeit' => '08:00',
-            'medikament' => 'Test-Medikament',
-            'wochentag' => 'MO'
-        ],
+        'naechste' => getNextIntake($pdo),
         'motivation' => [],
         'verlauf' => $verlaufWeeklyMatrix,
         'wochenstatistik' => groupByWeek($verlaufExtended),
