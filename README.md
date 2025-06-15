@@ -47,30 +47,8 @@ Innert der aktuellen Woche sieht man auch immer den aktuellen Plan, welches Medi
 
 ## 🔁Reproduzierbarkeit
 
-**Folge dieser Schritt-für-Schritt-Anleitung**, um das Projekt nachzubauen:
-
-1. **Hardware beschaffen**  
-   - ESP32-C6  
-   - VL6180X Distanzsensoren ×2  
-   - GP541-B Magnetsensoren ×2  
-   - OLED-Display  
-   - Steckbrett, Kabel, Widerstände
-
-2. **Schaltplan gemäß Steckschema aufbauen**  
-   → siehe Abschnitt [Steckschema](#steckschema)
-
-3. **Firmware `mc.ino` auf ESP32 flashen**  
-   - via Arduino IDE oder PlatformIO  
-   - WLAN-Zugangsdaten eintragen
-
-4. **Webserver lokal oder auf Raspberry Pi einrichten**  
-   - PHP & MySQL installieren  
-   - `load.php`, `get_next.php`, `submit_medikament.php`, `unload.php`, `config.php` hochladen  
-   - Datenbanktabellen importieren
-
-5. **Website aufrufen (`index.html`)**  
-   - Im gleichen Server-Verzeichnis hosten  
-   - Medikamentenpläne erstellen und testen
+Wenn du selbst Interesse hast das Projekt nachzubauen, dann findest du hier eine auführliche Anleitung: :)
+https://docs.google.com/document/d/1ege301V0So02RBs3WJ28wAcD5htAfxtaAjiDvV3Bwis/edit?usp=sharing
 
 ---
 
@@ -110,9 +88,14 @@ _Füge hier Screenshots oder GIFs ein, z. B.:_
 
 ## 🎥Video-Dokumentation
 
+Hier findest du noch eine kleine Präsentation zu meinem Pillo Gadget.
+-> https://youtu.be/Q0Ffs1uNg1s
+
 ---
 
 ## ⚙️Umsetzungsprozess
+
+
 
 ### 🔧Entwicklungsprozess
 
