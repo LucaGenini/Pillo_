@@ -76,15 +76,6 @@ https://docs.google.com/document/d/1ege301V0So02RBs3WJ28wAcD5htAfxtaAjiDvV3Bwis/
 
 ## 🖼️Screenshots / Medien
 
-_Füge hier Screenshots oder GIFs ein, z. B.:_
-
-- Weboberfläche (index.html)
-- OLED-Anzeige mit aktueller Einnahme
-- Graphen aus `unload.php`
-
-![Weboberfläche]
-<img width="1680" alt="Bildschirmfoto 2025-06-15 um 23 32 24" src="https://github.com/user-attachments/assets/455470d3-0423-495e-bb80-71240eb16cd7" />
-
 ![OLED Screenshot](./assets/oled_display.jpg)
 ![IMG_5871](https://github.com/user-attachments/assets/8f0d655c-69c2-4746-b6ff-ebb463790d7d)
 
