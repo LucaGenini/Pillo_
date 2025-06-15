@@ -27,9 +27,8 @@ try {
     }
 
     $fach = intval($input["fach_nr"]);
-    $korrekt = isset($input["korrekt"]) ? (bool)$input["korrekt"] : true;
-    $timestamp = date("Y-m-d H:i:s");
-    $zeit = date("H:i:s");
+    $timestamp = new DateTime();
+    $zeit = $timestamp->format("H:i:s");
 
     $tag = strtoupper(date("D"));
     $deTag = match($tag) {
@@ -40,13 +39,14 @@ try {
 
     file_put_contents("debug.txt", "📆 Tag: $deTag, ⏰ Zeit: $zeit, 📦 Fach: $fach" . PHP_EOL, FILE_APPEND);
 
-    // Medikamentenplan anhand von Wochentag + Zeit (±10 Minuten) suchen
+    // Medikamentenplan anhand von Wochentag + Zeit (±60 Min) suchen
     $sql = "
-        SELECT id FROM medication_schedule
+        SELECT id, uhrzeit
+        FROM medication_schedule
         WHERE fach_nr = :fach
           AND status = 'voll'
           AND wochentag = :tag
-          AND uhrzeit BETWEEN SUBTIME(:zeit, '00:10:00') AND ADDTIME(:zeit, '00:10:00')
+          AND uhrzeit BETWEEN SUBTIME(:zeit, '01:00:00') AND ADDTIME(:zeit, '01:00:00')
         ORDER BY ABS(TIMESTAMPDIFF(SECOND, uhrzeit, :zeit))
         LIMIT 1
     ";
@@ -57,35 +57,53 @@ try {
         'zeit' => $zeit
     ]);
 
-    $plan_id = $stmt->fetchColumn();
+    $plan = $stmt->fetch();
+    $plan_id = $plan['id'] ?? null;
+    $korrekt = 0; // Standardwert
+
     file_put_contents("debug.txt", "🔎 Gefundene plan_id: " . ($plan_id ?: 'NULL') . PHP_EOL, FILE_APPEND);
 
+    // Zeitvergleich zur Bestimmung von korrekt (0/1/2)
     if ($plan_id) {
-        // Einnahme loggen
+        $soll = new DateTime($plan['uhrzeit']);
+        $ist = $timestamp;
+        $diff = abs($soll->getTimestamp() - $ist->getTimestamp());
+
+        if ($diff <= 600) {
+            $korrekt = 1; // grün – pünktlich
+        } elseif ($diff <= 3600) {
+            $korrekt = 2; // gelb – leicht verspätet
+        } else {
+            $korrekt = 0; // rot – zu spät
+        }
+
+        // Einnahme loggen mit plan_id
         $stmt = $pdo->prepare("INSERT INTO medication_log (fach_nr, timestamp, korrekt, plan_id)
                                VALUES (?, ?, ?, ?)");
-        $stmt->execute([$fach, $timestamp, $korrekt, $plan_id]);
-        file_put_contents("debug.txt", "📥 Einnahme geloggt mit plan_id: $plan_id" . PHP_EOL, FILE_APPEND);
+        $stmt->execute([$fach, $timestamp->format("Y-m-d H:i:s"), $korrekt, $plan_id]);
+        file_put_contents("debug.txt", "📥 Einnahme geloggt mit plan_id: $plan_id (korrekt = $korrekt)" . PHP_EOL, FILE_APPEND);
 
-        if ($korrekt) {
-            // last_taken setzen
+        // last_taken nur bei grün oder gelb setzen
+        if (in_array($korrekt, [1, 2])) {
             $update = $pdo->prepare("UPDATE medication_schedule SET last_taken = ? WHERE id = ?");
-            $update->execute([$timestamp, $plan_id]);
+            $update->execute([$timestamp->format("Y-m-d H:i:s"), $plan_id]);
             file_put_contents("debug.txt", "✅ last_taken aktualisiert für Plan $plan_id" . PHP_EOL, FILE_APPEND);
         }
+
     } else {
-        // Kein Plan – trotzdem loggen
+        // Kein passender Plan – trotzdem Einnahme loggen
         $stmt = $pdo->prepare("INSERT INTO medication_log (fach_nr, timestamp, korrekt)
                                VALUES (?, ?, ?)");
-        $stmt->execute([$fach, $timestamp, false]);
-        file_put_contents("debug.txt", "⚠️ Kein Plan gefunden – Einnahme ohne plan_id geloggt" . PHP_EOL, FILE_APPEND);
+        $stmt->execute([$fach, $timestamp->format("Y-m-d H:i:s"), 0]);
+        file_put_contents("debug.txt", "⚠️ Kein Plan gefunden – Einnahme ohne plan_id geloggt (korrekt = 0)" . PHP_EOL, FILE_APPEND);
     }
 
     echo json_encode([
         "status" => "ok",
         "fach" => $fach,
-        "zeit" => $timestamp,
-        "plan_id" => $plan_id ?: null
+        "zeit" => $timestamp->format("Y-m-d H:i:s"),
+        "plan_id" => $plan_id ?: null,
+        "korrekt" => $korrekt
     ]);
 
 } catch (PDOException $e) {

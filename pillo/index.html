@@ -15,52 +15,88 @@
   <main class="container">
     <section class="intro">
       <div class="intro-text">
-        <h2>eine tägliche Medikamentenhilfe – Zuverlässig & einfach.</h2>
-        <p><strong>Die smarte Medikamentenbox mit Web-Erinnerung & Notfallfunktion</strong></p>
-        <ol>
-          <li><strong>Medikamente eintragen:</strong> Uhrzeit, Fach und Wochentage festlegen.</li>
-          <li><strong>Display zeigt, was als Nächstes dran ist:</strong> z. B. 12:00 – Fach 2 – Blutdruckmedikament.</li>
-          <li><strong>Fach öffnen – Einnahme erfolgt.</strong></li>
-          <li><strong>Vergessen?</strong> Du wirst automatisch erinnert.</li>
-          <li><strong>Alles im Blick:</strong> Einnahmen farblich <span class="highlight-green">markiert</span>.</li>
-        </ol>
-        <button class="btn-primary" onclick="openPopup()">Medikamente eintragen</button>
+          <h1>💊 Ihre tägliche Medikamentenhilfe</h1>
+          <p>Pillo begleitet Sie im Alltag – von der Einnahmeerinnerung bis zum Nachfüllhinweis.</p>
+        
+          <h3>✅ So funktioniert’s:</h3>
+          <ol>
+            <li><strong>Medikament eintragen:</strong> Name, Uhrzeit, Wochentag und Fach festlegen.</li>
+            <li><strong>Einsetzen:</strong> Tablette ins Fach legen – das System erkennt sie automatisch.</li>
+            <li><strong>Einnahme prüfen:</strong> Anzeige zeigt Uhrzeit, Fach und Medikament.</li>
+            <li><strong>Einnahme durchführen:</strong> Fach öffnen – der Status wird automatisch erfasst.</li>
+            <li><strong>Nachfüllen:</strong> Hinweis erscheint – neue Tablette einsetzen, fertig.</li>
+          </ol>      
+        <button id="open-popup-btn" class="btn-primary">Medikamente eintragen</button>
       </div>
       <img src="pictures/Gadget.png" alt="Medikamentenbox">
     </section>
 
     <section class="status-box">
-      <h3>Nächste Einnahme</h3>
+      <div class="chart-header">
+        <h2>Nächste Einnahme</h2>
+      </div>
       <div class="next-intake" id="naechste-einnahme">Wird geladen...</div>
-
-      <h3>Einnahmestatus</h3>
-      <div class="fach-status" id="einnahme-status"></div>
     </section>
 
-    <!-- Neuer Statistikbereich -->
     <section class="history-box">
-        <h3>Einnahmeverlauf (diese Woche)</h3>
-        <div class="chart-container">
-          <canvas id="verlaufChart"></canvas>
-        </div>
-      
-        <div style="margin-top: 2rem;">
-          <div class="toggle-buttons">
-            <button onclick="switchStats('monat')" class="btn-primary active" id="btn-monat">Monatsstatistik</button>
-            <button onclick="switchStats('jahr')" class="btn-primary" id="btn-jahr">Jahresstatistik</button>
-          </div>
-      
-          <div id="monatsansicht" class="chart-container">
-            <canvas id="wochenStackedChart"></canvas>
-          </div>
-      
-          <div id="jahresansicht" class="chart-container" style="display: none;">
-            <canvas id="jahresStackedChart"></canvas>
-          </div>
-        </div>
-      </section>
+      <div class="chart-header">
+        <h2>Einnahmeverlauf (diese Woche)</h2>
+      </div>
 
-    <!-- Pop-up Formular -->
+      <details class="chart-explanation">
+        <summary>🛈 Was zeigt das Diagramm?</summary>
+        <p>Hier siehst du, <strong>wie regelmässig du deine Medikamente diese Woche eingenommen hast und wieviele du noch vor dir hast.</strong>.</p>
+        <p>Jeder farbige Kasten zeigt, was an einem bestimmten Tag und Fach passiert ist:</p>
+        <ul>
+          <li><span style="color: green; font-weight: bold;">🟩 Grün = Pünktlich:</span> Das Medikament wurde zur richtigen Zeit eingenommen.</li>
+          <li><span style="color: orange; font-weight: bold;">🟨 Gelb = Verspätet:</span> Es wurde eingenommen, aber später als geplant.</li>
+          <li><span style="color: red; font-weight: bold;">🟥 Rot = Ausgefallen:</span> Die Einnahme wurde vergessen oder nicht durchgeführt.</li>
+          <li><span style="color: black; font-weight: bold;">⚪ Weiss = Keine Einnahme:</span> An diesem Tag war kein Medikament geplant.</li>
+          <li><span style="color: gray; font-weight: bold;">⬜ Grau = Geplant:</span> Die Einnahme ist noch in der Zukunft geplant.</li>
+        </ul>
+      </details>
+      <div class="chart-divider-wrapper">
+        <hr class="chart-divider" />
+      </div>
+      <div class="chart-container">
+        <canvas id="verlaufChart"></canvas>
+      </div>
+    </section>
+    <section class="history-box">
+      <div class="chart-header">
+        <h2>Medikation – Verlauf</h2>
+      </div>
+    
+      <details class="chart-explanation">
+        <summary>🛈 Was zeigt das Diagramm?</summary>
+        <p>Das Diagramm zeigt dir, <strong>wie regelmässig du deine Medikamente über einen bestimmten Zeitraum eingenommen hast</strong> – z. B. pro Woche, Monat oder über das ganze Jahr hinweg.</p>
+        <p>Jede Säule steht für einen Zeitraum (z. B. Kalenderwoche oder Monat) und zeigt den Anteil deiner Einnahmen in drei Farben:</p>
+        <ul>
+          <li><span style="color: green;">🟩 Pünktlich:</span> zur geplanten Zeit</li>
+          <li><span style="color: orange;">🟨 Verspätet:</span> nicht zur vorgesehenen Zeit</li>
+          <li><span style="color: red;">🟥 Ausgefallen:</span> nicht durchgeführt</li>
+        </ul>
+        <p>So erkennst du auf einen Blick, wie zuverlässig deine Medikamenteneinnahme war.</p>
+      </details>
+    
+      <div class="chart-divider-wrapper">
+        <hr class="chart-divider" />
+      </div>
+    
+      <div class="toggle-buttons">
+        <button id="btn-monat" class="btn-primary active" onclick="switchStats('monat')">Monatsstatistik</button>
+        <button id="btn-jahr" class="btn-primary" onclick="switchStats('jahr')">Jahresstatistik</button>
+      </div>
+    
+      <div id="monatsansicht" class="chart-container">
+        <canvas id="wochenStackedChart"></canvas>
+      </div>
+    
+      <div id="jahresansicht" class="chart-container" style="display: none;">
+        <canvas id="jahresStackedChart"></canvas>
+      </div>
+    </section>
+    
     <div class="popup" id="popupForm">
       <form id="medForm" action="submit_medikament.php" method="post" onsubmit="return handleFormSubmit(event)">
         <label for="fach">Fach:</label>
@@ -68,7 +104,6 @@
           <option value="Fach 1">Fach 1</option>
           <option value="Fach 2">Fach 2</option>
         </select>
-
         <label for="medi_name">Medikamentenname:</label>
         <input type="text" name="medi_name" id="medi_name" required>
 
@@ -97,7 +132,8 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.1.0/dist/chartjs-chart-matrix.min.js"></script>
-  <script src="geladen.js"></script>
+  <script src="loading1.js"></script>
 </body>
 </html>
