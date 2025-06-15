@@ -57,16 +57,16 @@ function renderMatrixChart(verlaufData) {
   const heuteIndex = (new Date().getDay() + 6) % 7;
 
   const data = verlaufData.flatMap((fachObj, rowIndex) =>
-    fachObj.wochentage.map((eintrag, colIndex) => ({
+    fachObj.tage.map((eintrag, colIndex) => ({
       x: colIndex,
       y: rowIndex,
-      v: typeof eintrag === "string" ? eintrag : eintrag.status,
-      zeit: eintrag.zeit || "",
-      medikament: eintrag.medikament || "",
+      v: eintrag.status,
+      datum: eintrag.datum,
       fach: fachObj.fach,
       highlight: colIndex === heuteIndex
     }))
   );
+  
 
   new Chart(ctx, {
     type: "matrix",
