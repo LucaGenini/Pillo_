@@ -275,3 +275,4 @@ void loop() {
 
   delay(500); // Kurze Pause bis zur nächsten Schleife
 }
+
