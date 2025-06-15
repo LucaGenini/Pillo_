@@ -42,6 +42,7 @@ Die Versäumnisse werden mittels einer Grafik angezeigt, bei der ersichtlich ist
 Link zur Website: www.lucagenini.com/Pillo
 
 Innert der aktuellen Woche sieht man auch immer den aktuellen Plan, welches Medikament zu welcher Uhrzeit eingenommen werden muss und je nach Einnahme oder Versäumnis registriert.
+<img width="646" alt="Bildschirmfoto 2025-06-15 um 23 56 21" src="https://github.com/user-attachments/assets/8bbc0354-200c-4111-a4a9-1e2a5984246a" />
 
 ---
 
@@ -81,8 +82,13 @@ _Füge hier Screenshots oder GIFs ein, z. B.:_
 - OLED-Anzeige mit aktueller Einnahme
 - Graphen aus `unload.php`
 
-![Weboberfläche](./assets/webui.png)  
+![Weboberfläche]
+<img width="1680" alt="Bildschirmfoto 2025-06-15 um 23 32 24" src="https://github.com/user-attachments/assets/455470d3-0423-495e-bb80-71240eb16cd7" />
+
 ![OLED Screenshot](./assets/oled_display.jpg)
+![IMG_5871](https://github.com/user-attachments/assets/8f0d655c-69c2-4746-b6ff-ebb463790d7d)
+
+
 
 ---
 
@@ -94,6 +100,17 @@ Hier findest du noch eine kleine Präsentation zu meinem Pillo Gadget.
 ---
 
 ## ⚙️Umsetzungsprozess
+
+Der Umsetzungsprozess hat sich anfangs schwierig gestaltet. In einem ersten Schritt habe ich folgenden Bauplan für mein Gadget vorgesehen. 
+
+<img width="1053" alt="Bildschirmfoto 2025-06-15 um 23 51 21" src="https://github.com/user-attachments/assets/2c431c8c-7d6d-43a3-a504-63704058c96a" />
+
+Ich musste, aber schnell feststellen, das ich nicht wirklich begabt bin im Löten deswegen entschied ich mich für eine andere Lösung. Indem ich die Breadboards anreiht wie man dies auf dem Bild unterhalb erkennen kann.
+
+<img width="663" alt="Bildschirmfoto 2025-06-15 um 23 54 27" src="https://github.com/user-attachments/assets/521f299c-7fc1-46f8-8260-fdff2533b08a" />
+<img width="616" alt="Bildschirmfoto 2025-06-15 um 23 54 41" src="https://github.com/user-attachments/assets/083d2f01-585e-4760-b326-09b7e69bc710" />
+
+Wenn man das Medikamentenfach öffnet. Entfernt sich der Magnet vom Reed-Schalter, welcher den Distanzsensor freigibt.
 
 
 
@@ -124,11 +141,18 @@ Die Motivation entstand aus einer persönlichen Erfahrung mit unregelmässiger M
 - **ESP32 als Client**: übernimmt keine Logikentscheidung, sondern sendet Zustände an den Server, welcher die Prüfung und Speicherung übernimmt.
 - Die Visualisierung auf der Website zeigt klar: Wurde das Medikament eingenommen? Wurde es vergessen? Mit welchen Abweichungen?
 
+Für das Gadget an sich wollte ich etwas schlichtes bei dem schnell erkennbar ist, welches Fach man entnehmen muss. Mit dem Pillo Logo zusammen bin ich echt zufrieden geworden. :)
+
+<img width="1203" alt="Bildschirmfoto 2025-06-15 um 23 58 09" src="https://github.com/user-attachments/assets/1db89306-fb1e-42b5-83c1-1187d5b2c4cb" /><img width="1214" alt="Bildschirmfoto 2025-06-15 um 23 57 56" src="https://github.com/user-attachments/assets/4ddffaff-3a52-48de-9d70-dc1b3a1e13e8" />
+<img width="1216" alt="Bildschirmfoto 2025-06-15 um 23 58 03" src="https://github.com/user-attachments/assets/a46266b0-9b8a-4c4d-97de-65691c0d5f4c" />
+
+
+
 ---
 
 ### 🚫Verworfene Lösungsansätze
 
-- **Nur mit Distanzsensoren zu arbeiten**, ohne Magnetsensor: stellte sich als zu fehleranfällig heraus – Bewegungen vor dem Sensor lösten falsche Einnahmen aus.
+- **Nur mit Magnetsensoren zu arbeiten**, ohne Distanzsensor: stellte sich als zu fehleranfällig heraus – Bewegungen vor dem Sensor lösten falsche Einnahmen aus.
 - **Backendlose Lösung** rein auf dem ESP32 und OLED: schränkte Erweiterbarkeit massiv ein, keine Statistikauswertung möglich.
 - **OLED-Einzeilige Darstellung**: führte zu abgeschnittenen Informationen – Umstieg auf Zweizeilenanzeige (Zeit + Medikament).
 
