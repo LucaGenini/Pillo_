@@ -36,7 +36,7 @@ In jüngeren Jahren musste ich selbst regelmässig ein Medikament konsumieren, j
 
 Die Versäumnisse werden mittels einer Grafik angezeigt, bei der ersichtlich ist, wie viel Prozent ein Medikament effektiv eingenommen wurde innert eines Zeitraumes.
 
-Link zur Website: www.lucagenini.com/Pillo
+Link zur Website: [www.lucagenini.com/Pillo](https://lucagenini.com/pillo/)
 
 Innert der aktuellen Woche sieht man auch immer den aktuellen Plan, welches Medikament zu welcher Uhrzeit eingenommen werden muss und je nach Einnahme oder Versäumnis registriert.
 <img width="646" alt="Bildschirmfoto 2025-06-15 um 23 56 21" src="https://github.com/user-attachments/assets/8bbc0354-200c-4111-a4a9-1e2a5984246a" />
@@ -273,7 +273,7 @@ Daraufhin musste ich mit einem Debug feststellen, dass die effektive Distanzmess
 ## 🎥Video-Dokumentation
 
 Hier findest du noch eine kleine Präsentation zu meinem Pillo Gadget.
--> [https://youtu.be/Q0Ffs1uNg1s](https://youtu.be/PgARDj2r46M)
+-> https://youtu.be/UQsxnXkYrAo
 
 ---
 
