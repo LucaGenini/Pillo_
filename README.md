@@ -406,7 +406,7 @@ Im Verlauf der Umsetzung kam es zu mehreren technischen Problemen und notwendige
 
 ### 🧱Planung & Aufgabenverteilung
 
-Da es sich um ein Einzelprojekt handelte, lagen alle Aufgaben bei mir – von der Konzeption über die Verkabelung, Programmierung, Webentwicklung bis hin zur finalen Dokumentation. Gearbeitet wurde parallel an den Modulen, mit regelmässigen Tests auf funktionierender Hardware.
+Da es sich um ein Einzelprojekt handelte, lagen alle Aufgaben bei mir (Einzelperson) – von der Konzeption über die Verkabelung, Programmierung, Webentwicklung bis hin zur finalen Dokumentation. Gearbeitet wurde parallel an den Modulen, mit regelmässigen Tests auf funktionierender Hardware.
 
 Ein Projektplan wurde grob in Phasen eingeteilt:
 - Prototyp Hardware (Sensorik)
@@ -419,14 +419,18 @@ Ein Projektplan wurde grob in Phasen eingeteilt:
 
 ### 🧠Lerneffekt
 
-Dieses Projekt brachte viele neue Herausforderungen, durch die ich wertvolle Erfahrungen gesammelt habe:
+Durch die Arbeit an diesem Projekt habe ich in mehreren Bereichen viel dazu gelernt und mein Verständnis für komplexe Systemarchitekturen deutlich erweitert.
 
-- **IoT-Architektur mit ESP32**, HTTP-Kommunikation und REST-API-Anbindung
-- **Sensorfusion** (zwei Sensoren logisch verknüpfen)
-- **MySQL-Abfragen für Zeitvergleiche, Statistik und Filterung**
-- **PHP-Serverlogik mit Prepared Statements und Fehlerbehandlung**
-- **Optimierung für Performance (z. B. Datenbankabfragen)**
-- Umgang mit realen Hardwareproblemen (z. B. Sensorfehlfunktionen, ungenaue Trigger)
+Ich konnte mein Wissen im Bereich **IoT-Entwicklung** vertiefen, insbesondere was die Programmierung und Anbindung eines ESP32-C6 betrifft. Ich habe gelernt, wie wichtig es ist, Sensoren zuverlässig auszulesen, korrekt zu kalibrieren und Hardware-Komponenten so zu positionieren, dass sie im Alltag zuverlässig funktionieren.
+
+Im Bereich **Webentwicklung** habe ich sowohl auf der Client- als auch auf der Serverseite grosse Fortschritte gemacht. Besonders im Zusammenspiel zwischen PHP, Datenbank und Frontend-Logik wurde mir klar, wie zentral eine saubere Datenstruktur, konsistente Formate und effiziente Abfragen sind. Ich musste lernen, wie man unterschiedliche Datenquellen und Zeitformate so kombiniert, dass sie synchronisiert und logisch auswertbar bleiben.
+
+Ein grosser Lerneffekt lag auch in der **Datenvisualisierung**. Ich habe mich intensiv mit Tools wie Chart.js auseinandergesetzt und gelernt, wie wichtig es ist, Daten nicht nur korrekt, sondern auch verständlich und ansprechend darzustellen – gerade für eine Zielgruppe, die auf Übersichtlichkeit angewiesen ist.
+
+Zusätzlich habe ich gelernt, mit **Fehlfunktionen in der Hardwareumsetzung** umzugehen, Lösungen kreativ zu suchen und bei unerwarteten Problemen pragmatisch umzudenken. Das betraf sowohl die Sensorlogik als auch die Modellierung für den 3D-Druck.
+
+Abschliessend kann ich sagen, dass Pillo nicht nur ein funktionierendes technisches System ist, sondern auch ein Lernfeld war, das mir geholfen hat, systemübergreifend zu denken, Problemstellungen zu durchdringen und ein Projekt in seiner vollen Komplexität eigenständig umzusetzen.
+
 
 ---
 
@@ -456,8 +460,6 @@ Trotz intensiver Tests gibt es aktuell noch einige bekannte Einschränkungen ode
 | **Browser DevTools** | Debugging von HTML, CSS, JS |
 
 ---
-
-## 📚Fazit
 
 ## 📚 Fazit
 
