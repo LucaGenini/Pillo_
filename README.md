@@ -12,8 +12,8 @@
 - [🔧 Komponentenplan](#komponentenplan)
 - [🧩 Steckschema](#steckschema)
 - [Umsetzungsprozess](#umsetzungsprozess)
-  - [🔧 Entwicklungsprozess](#entwicklungsprozess)
-  - [🚫 Verworfene Lösungsansätze](#verworfene-lösungsansätze)
+  - [Entwicklungsprozess](#entwicklungsprozess)
+  - [Verworfene Lösungsansätze](#verworfene-lösungsansätze)
   - [🔄 Fehlschläge und Umplanung](#fehlschläge-und-umplanung)
   - [🧱 Planung & Aufgabenverteilung](#planung--aufgabenverteilung)
   - [🧠 Lerneffekt](#lerneffekt)
@@ -323,7 +323,7 @@ Am Schluss musste ich dann nur noch meine Komponenten in das Gehäuse einfügen 
 
 ---
 
-### 🔧 Entwicklungsprozess
+### Entwicklungsprozess
 
 Der Entwicklungsprozess für die Pillo-Box war geprägt durch viele iterative Verbesserungen und parallele Arbeitsphasen. Ziel war es, ein funktionierendes IoT-System zu bauen, das sowohl Hardware- als auch Webtechnologien vereint und dabei zuverlässig im Alltag funktioniert. Die Umsetzung fand auf verschiedenen Ebenen statt:
 
@@ -384,7 +384,7 @@ Insgesamt entstand ein robustes System, das auch mit einfachen Mitteln (Breadboa
 
 ---
 
-### 🚫 Verworfene Lösungsansätze
+### Verworfene Lösungsansätze
 
 Während der Entwicklung wurden verschiedene Ideen und Ansätze getestet, jedoch teilweise wieder verworfen, da sie in der praktischen Umsetzung zu ungenau, fehleranfällig oder zu komplex waren:
 
