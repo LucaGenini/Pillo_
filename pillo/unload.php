@@ -64,7 +64,7 @@ function getVerlaufExtended($pdo, $startDate, $endDate) {
             $datumStr = $date->format('Y-m-d');
             $jetzt = new DateTime();
 
-            $stmt = $pdo->prepare("SELECT id, uhrzeit, created_at FROM medication_schedule WHERE fach_nr = :fach AND wochentag = :tag AND status = 'voll'");
+            $stmt = $pdo->prepare("SELECT id, uhrzeit, created_at, med_name FROM medication_schedule WHERE fach_nr = :fach AND wochentag = :tag AND status = 'voll'");
             $stmt->execute(['fach' => $fach, 'tag' => $tag]);
             $plaene = $stmt->fetchAll();
 
@@ -73,21 +73,28 @@ function getVerlaufExtended($pdo, $startDate, $endDate) {
                 continue;
             }
 
-            $finalStatus = 'future';
+            $finalStatus = 'no-med';
+            $zeit = null;
+            $medikament = null;
+
             foreach ($plaene as $plan) {
                 $soll = new DateTime($datumStr . ' ' . $plan['uhrzeit']);
                 $created = new DateTime($plan['created_at']);
 
+                // Plan gilt erst ab Startdatum
                 if ($created > $soll) {
-                    $finalStatus = 'no-med';
                     continue;
                 }
+
+                $zeit = substr($plan['uhrzeit'], 0, 5);
+                $medikament = $plan['med_name'] ?? null;
 
                 if ($soll > $jetzt) {
                     $finalStatus = 'future';
                     continue;
                 }
 
+                // Einnahmelog prüfen
                 $stmt2 = $pdo->prepare("SELECT timestamp, korrekt FROM medication_log WHERE fach_nr = :fach AND plan_id = :pid AND DATE(timestamp) = :datum");
                 $stmt2->execute([
                     'fach' => $fach,
@@ -108,7 +115,12 @@ function getVerlaufExtended($pdo, $startDate, $endDate) {
                 }
             }
 
-            $tageDaten[] = ['datum' => $datumStr, 'status' => $finalStatus];
+            $tageDaten[] = [
+                'datum' => $datumStr,
+                'status' => $finalStatus,
+                'zeit' => $zeit,
+                'medikament' => $medikament
+            ];
         }
 
         $result[] = ['fach' => "Fach $fach", 'tage' => $tageDaten];
@@ -116,6 +128,9 @@ function getVerlaufExtended($pdo, $startDate, $endDate) {
 
     return $result;
 }
+
+
+
 
 function getVerlaufWeeklyMatrix($verlaufExtended) {
     $heute = new DateTime();
@@ -225,7 +240,10 @@ try {
     $endDate = $today->format('Y-m-d');
 
     $verlaufExtended = getVerlaufExtended($pdo, $startDate, $endDate);
-    $verlaufWeeklyMatrix = getVerlaufWeeklyMatrix($verlaufExtended);
+    $startMontag = (new DateTime())->modify('monday this week')->format('Y-m-d');
+    $endeSonntag = (new DateTime())->modify('sunday this week')->format('Y-m-d');
+    $verlaufWeeklyMatrix = getVerlaufExtended($pdo, $startMontag, $endeSonntag);
+
 
     echo json_encode([
         'naechste' => getNextIntake($pdo),
