@@ -459,6 +459,20 @@ Trotz intensiver Tests gibt es aktuell noch einige bekannte Einschränkungen ode
 
 ## 📚Fazit
 
+## 📚 Fazit
+
+Insgesamt bin ich sehr zufrieden mit dem Ergebnis dieser Arbeit.  
+Es war mit Abstand das umfangreichste Projekt, das ich bisher im Rahmen meines Studiums an der FH Graubünden umsetzen durfte. Die Arbeit umfasste sämtliche Bereiche von der Elektronik über das physische Gadget bis hin zur vollständigen Front-End- und Backend-Entwicklung.
+
+Dass die Umsetzung anspruchsvoll werden würde, war mir von Anfang an bewusst. Wie viele Tage und Nächte mich dieses Projekt am Ende tatsächlich kosten würde, konnte ich jedoch nicht ahnen. Besonders herausfordernd war die Komplexität der Logik, da es nicht nur um die einfache Visualisierung von Sensordaten ging, sondern um den Vergleich mehrerer Tabellen, den zeitlichen Abgleich und die korrekte Darstellung im Frontend.
+
+Was zunächst simpel wirkte, etwa das Vergleichen einer geplanten Uhrzeit mit einem tatsächlichen Einnahmezeitpunkt, entpuppte sich als vielschichtige technische Herausforderung. Daten mussten zeitlich und logisch korrekt abgeglichen werden. Unterschiedliche Formate wie MySQL-Zeitstempel und JavaScript-Zeitwerte mussten einheitlich funktionieren. Visualisierungen sollten nicht nur korrekt, sondern auch verständlich und übersichtlich gestaltet sein.
+
+Diese Erfahrungen haben mir gezeigt, wie viel Detailarbeit und Präzision selbst in scheinbar einfachen Anwendungsfällen steckt, insbesondere wenn Hardware, Backend und Frontend nahtlos zusammenspielen sollen.
+
+Trotz aller Hürden und Rückschläge blicke ich heute mit Stolz auf ein funktionierendes System zurück. Das Projekt hat meine Kompetenzen in den Bereichen IoT, Datenverarbeitung, Webentwicklung und Datenbanklogik stark erweitert. Ich bin gespannt, ob und wie sich die Entwicklung von *Pillo* in Zukunft fortsetzen wird. Erste Ideen für eine Weiterentwicklung sind bereits vorhanden.
+
+
 
 ---
 
