@@ -457,7 +457,7 @@ Trotz intensiver Tests gibt es aktuell noch einige bekannte Einschränkungen ode
 
 ---
 
-## 📚 Fazit
+## 📚Fazit
 
 Insgesamt bin ich sehr zufrieden mit dem Ergebnis dieser Arbeit.  
 Es war mit Abstand das umfangreichste Projekt, das ich bisher im Rahmen meines Studiums an der FH Graubünden umsetzen durfte. Die Arbeit umfasste sämtliche Bereiche von der Elektronik über das physische Gadget bis hin zur vollständigen Front-End- und Backend-Entwicklung.
