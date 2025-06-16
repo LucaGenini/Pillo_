@@ -12,6 +12,13 @@
 - [🔧 Komponentenplan](#komponentenplan)
 - [🧩 Steckschema](#steckschema)
 - [⚙️ Umsetzungsprozess](#umsetzungsprozess)
+  - [🔧 Entwicklungsprozess](#entwicklungsprozess)
+  - [🚫 Verworfene Lösungsansätze](#verworfene-lösungsansätze)
+  - [🔄 Fehlschläge und Umplanung](#fehlschläge-und-umplanung)
+  - [🧱 Planung & Aufgabenverteilung](#planung--aufgabenverteilung)
+  - [🧠 Lerneffekt](#lerneffekt)
+  - [🐞 Known Bugs](#known-bugs)
+  - [🧰 Hilfsmittel & Tools](#hilfsmittel--tools)
 - [🎥 Video-Dokumentation](#video-dokumentation)
 - [📚 Fazit](#fazit)
 
