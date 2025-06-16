@@ -48,26 +48,135 @@ Innert der aktuellen Woche sieht man auch immer den aktuellen Plan, welches Medi
 
 ## 🔁Reproduzierbarkeit
 
-Wenn du selbst Interesse hast das Projekt nachzubauen, dann findest du hier eine auführliche Anleitung: :)
-https://docs.google.com/document/d/1ege301V0So02RBs3WJ28wAcD5htAfxtaAjiDvV3Bwis/edit?usp=sharing
+Folge dieser Schritt-für-Schritt-Anleitung**, um das Projekt nachzubauen:
+
+1. **Hardware beschaffen**  
+   - ESP32-C6  
+   - VL6180X Distanzsensoren ×2  
+   - GP541-B Magnetsensoren ×2  
+   - OLED-Display  
+   - Steckbrett, Kabel, Widerstände
+
+2. **Schaltplan gemäß Steckschema aufbauen**  
+   → siehe Abschnitt [Steckschema](#steckschema)
+
+3. **Firmware `mc.ino` auf ESP32 flashen**  
+   - via Arduino IDE oder PlatformIO  
+   - WLAN-Zugangsdaten eintragen
+
+4. **Webserver lokal oder auf Raspberry Pi einrichten**  
+   - PHP & MySQL installieren  
+   - `load.php`, `get_next.php`, `submit_medikament.php`, `unload.php`, `config.php` hochladen  
+   - Datenbanktabellen importieren
+
+5. **Website aufrufen (`index.html`)**  
+   - Im gleichen Server-Verzeichnis hosten  
+   - Medikamentenpläne erstellen und testen
 
 ---
 
 ## 🔄Flussdiagramm
+In einem ersten Schritt nach der Ideenfindung habe ich mit der Erstellung vom Flussdiagramm in Figma gestartet, dieser Prozess gestaltete sich schwieriger als Anfangs gedacht.
+Speziell da ich in ein Projekt in dieser Komplexität so noch nicht umgesetzt habe musste ich im nachhinein das Flussdiagramm nochmals grundlegend anpassen. Grund dafür war, dass auf dem Ursprünglichen gewisse Stränge fehlten oder die Umsetzung anderer Teile zu komplex oder gar nicht möglich waren so wie ich es mir erhofft hatte. Dennoch war die Erstellung des Flussdiagramm eine nützlich Übung, da ich so einen groben Überblick darüber bekommen konnte, wie mein Projekt funktionieren sollte.
 
+Hier im in Anschluss mein finales Flussdiagramm:
 ![Screenflow](https://github.com/user-attachments/assets/68f54622-40ea-4e81-a5e2-a8ce419c0432)
 *Das Diagramm zeigt die Kommunikationswege zwischen ESP32, Website und Server.*
 
 ---
 
 ## 🔧Komponentenplan
-
+Einen Komponentenplan zu erstellen stellte sich als nicht ganz so intuitiv dar wie ich mir dies Anfangs erhofft habe. Gerade auch deswegen, da ich für dieses Projekt mit mehreren PHP Files und Tabellen gearbeitet habe, was die Verarbeitung/Schematische Darstellung verkompliziert hat.
 ![Komponentenplan](https://github.com/user-attachments/assets/e54be341-70cc-4e0a-91e9-0666d4949830)
 *Verbindungen und Protokolle zwischen haptischen Komponenten und digitalen Modulen.*
+
+In einem ersten Schritt war mir nicht bewusst, wieviel komplexer sich das Projekt gestalten würde, wenn ich mehrere Tabellen verwende, welche Daten aus unterschiedlichen Quellen ziehen. Da ich die Auslesung der Daten und Zusammenarbeit und Auswertung in der DB komplett selbstständig umsetzen musste, forderte dies dementsprechend viele Trial & Error Versuche, bis alles sauber miteinander kommunizierte.
+
+Untenstehend die finalisierte Tabellenstruktur:
+<img width="1058" alt="Bildschirmfoto 2025-06-15 um 21 59 47" src="https://github.com/user-attachments/assets/88e7f6ba-4d42-43eb-a86e-efd0e5f52c20" />
+<img width="1104" alt="Bildschirmfoto 2025-06-15 um 21 59 54" src="https://github.com/user-attachments/assets/4b903c09-6f1a-471a-add5-d0eaf1dff29b" />
+
+Im Zentrum des Systems stehen zwei eng miteinander verknüpfte Tabellen:
+
+- **`medication_schedule`**: definiert den geplanten Einnahmerhythmus
+- **`medication_log`**: dokumentiert tatsächliche Einnahmen
+
+---
+
+** 📋 `medication_schedule` (Die Planungsgrundlage)**
+
+Diese Tabelle enthält alle **geplanten Einnahmen**, basierend auf Wochentagen und Uhrzeiten pro Medikamentenfach.
+
+Wichtige Felder:
+
+| Feld         | Bedeutung                                                 |
+|--------------|------------------------------------------------------------|
+| `fach_nr`    | Nummer des Fachs im Pillo-Spender                          |
+| `med_name`   | Name des Medikaments                                       |
+| `wochentag`  | Geplanter Einnahmetag (z. B. "MO")                         |
+| `uhrzeit`    | Geplante Uhrzeit                                           |
+| `status`     | Aktueller Ladezustand des Fachs ("voll", "leer" etc.)     |
+| `last_taken` | Zeitpunkt der letzten registrierten Einnahme              |
+| `created_at` | Wann wurde dieser Eintrag geplant?                         |
+| `id`         | Eindeutiger Primärschlüssel für Verknüpfung mit Logs       |
+
+**Ein Plan-Eintrag beschreibt also:**
+> *„Am Montag um 19:30 Uhr soll im Fach 2 das Medikament 'Methadon' eingenommen werden.“*
+
+---
+
+**📦 `medication_log` (Das reale Verhalten)**
+
+Diese Tabelle speichert jede **tatsächliche Interaktion** mit dem Spender: z. B. wenn ein Fach geöffnet wird und ein Medikament entnommen wird.
+
+| Feld        | Bedeutung                                                      |
+|-------------|-----------------------------------------------------------------|
+| `timestamp` | Zeitstempel der tatsächlichen Einnahme                         |
+| `korrekt`   | 1 = korrekt (geplant & eingenommen), 2 =verspätet, 0 = vergessen,   |
+| `plan_id`   | Verweis auf den geplanten Eintrag (`medication_schedule.id`)   |
+| `fach_nr`   | Welches Fach wurde geöffnet?                                   |
+| `id`        | Primärschlüssel                                                 |
+
+---
+
+** 🔗 Wie die Tabellen zusammenarbeiten**
+
+
+Die beiden Tabellen `medication_schedule` (Plan) und `medication_log` (Protokoll) arbeiten eng zusammen, um den gesamten Einnahmeprozess strukturiert abzubilden:
+
+1. **Planung**  
+   In `medication_schedule` wird festgelegt, **wann welches Medikament in welchem Fach eingenommen werden soll** – jeweils mit Wochentag, Uhrzeit und Medikamentenname. Jeder Planungseintrag erhält eine eindeutige `id`.
+
+2. **Einnahmeerfassung**  
+   Öffnet eine Person zur vorgesehenen Zeit ein Fach oder wird ein Sensor ausgelöst, **zeichnet das System die Einnahme automatisch auf**. Der Eintrag wird in `medication_log` gespeichert – mit Zeitstempel (`timestamp`), Fachnummer (`fach_nr`) und einem Verweis auf den zugehörigen Plan über `plan_id`.
+
+3. **Auswertung & Statuszuweisung**  
+   Anhand der `plan_id` wird die Einnahme dem entsprechenden geplanten Eintrag zugeordnet. Daraus wird automatisch der Einnahmestatus berechnet:
+   - **Grün** = pünktlich eingenommen (`korrekt = 1`)
+   - **Gelb** = verspätet oder früh, aber erkannt (`korrekt = 0`)
+   - **Rot** = keine Einnahme (kein Log-Eintrag vorhanden)
+
+
+Beispiel:  
+- In `medication_schedule` steht:  
+  `id = 1170`, `fach_nr = 1`, `wochentag = "MO"`, `uhrzeit = 02:15`, `med_name = "Aspirin"`  
+- Dann erfolgt am Montag eine Einnahme, gespeichert in `medication_log`:  
+  `timestamp = 2025-06-16 02:32`, `korrekt = 1`, `plan_id = 1170`
+
+🔁 Dieses Tabellen Struktur ermöglicht mir:
+- **Vergleich geplant vs. real** (z. B. „Wurde zu spät eingenommen?“)
+- **Zählung von Einnahmen pro Woche / Monat**
+- **Darstellung in Matrix- und Balkendiagrammen**
+
+Diese strukturierte Trennung zwischen Planung (`schedule`) und tatsächlicher Ausführung (`log`) war entscheidend für eine transparente, nachvollziehbare und automatisiert auswertbare Lösung im Pillo-System.
 
 ---
 
 ## 🧩Steckschema
+
+Das Steckschema für das Gadget sollte erst nur über ein halbes Breadboard laufen, jedoch war der Platz zu begrenzt, wodurch ich auf ein ganzes Breadboard umsteigen musste.
+Ich nutzte anschliessend das zweite Breadboard als Erhöhung für meine Reed-Magnet Schalter, da die  ursprüngliche Idee mit dem Löten der Kabel sich, schwieriger anstellte als gedacht. (siehe [Innenleben des Gadget](#innenleben-des-gadget))
+
 
 ![Steckplan] <img width="690" alt="Breadboard_PILLO" src="https://github.com/user-attachments/assets/a648950c-0470-4d46-a3ad-abfe32ca8ebb" />
 
@@ -99,7 +208,10 @@ Der Umsetzungsprozess hat sich anfangs schwierig gestaltet. In einem ersten Schr
 
 Ich musste, aber schnell feststellen, das ich nicht wirklich begabt bin im Löten deswegen entschied ich mich für eine andere Lösung. Indem ich die Breadboards anreiht wie man dies auf dem Bild unterhalb erkennen kann.
 
-<img width="663" alt="Bildschirmfoto 2025-06-15 um 23 54 27" src="https://github.com/user-attachments/assets/521f299c-7fc1-46f8-8260-fdff2533b08a" />
+
+### Innenleben des Gadget
+![Innenleben des Gadget](https://github.com/user-attachments/assets/7dd518fc-1761-44ce-9278-e2bcd21f3ced)
+
 <img width="616" alt="Bildschirmfoto 2025-06-15 um 23 54 41" src="https://github.com/user-attachments/assets/083d2f01-585e-4760-b326-09b7e69bc710" />
 
 Wenn man das Medikamentenfach öffnet. Entfernt sich der Magnet vom Reed-Schalter, welcher den Distanzsensor freigibt.
