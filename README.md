@@ -12,13 +12,6 @@
 - [🔧 Komponentenplan](#komponentenplan)
 - [🧩 Steckschema](#steckschema)
 - [⚙️ Umsetzungsprozess](#umsetzungsprozess)
-  - [🔧 Entwicklungsprozess](#entwicklungsprozess)
-  - [🚫 Verworfene Lösungsansätze](#verworfene-lösungsansätze)
-  - [🔄 Fehlschläge und Umplanung](#fehlschläge-und-umplanung)
-  - [🧱 Planung & Aufgabenverteilung](#planung--aufgabenverteilung)
-  - [🧠 Lerneffekt](#lerneffekt)
-  - [🐞 Known Bugs](#known-bugs)
-  - [🧰 Hilfsmittel & Tools](#hilfsmittel--tools)
 - [🎥 Video-Dokumentation](#video-dokumentation)
 - [📚 Fazit](#fazit)
 
@@ -160,8 +153,9 @@ Das System arbeitet vollständig **lokal**, solange sich der Server, ESP32 und B
 ---
 
 ## 🔄Flussdiagramm
-In einem ersten Schritt nach der Ideenfindung habe ich mit der Erstellung vom Flussdiagramm in Figma gestartet, dieser Prozess gestaltete sich schwieriger als Anfangs gedacht.
-Speziell da ich in ein Projekt in dieser Komplexität so noch nicht umgesetzt habe musste ich im nachhinein das Flussdiagramm nochmals grundlegend anpassen. Grund dafür war, dass auf dem Ursprünglichen gewisse Stränge fehlten oder die Umsetzung anderer Teile zu komplex oder gar nicht möglich waren so wie ich es mir erhofft hatte. Dennoch war die Erstellung des Flussdiagramm eine nützlich Übung, da ich so einen groben Überblick darüber bekommen konnte, wie mein Projekt funktionieren sollte.
+In einem ersten Schritt nach der Ideenfindung habe ich mit der Erstellung des Flussdiagramms in Figma begonnen. Dieser Prozess gestaltete sich schwieriger als anfangs gedacht, insbesondere da ich bisher noch kein Projekt mit einer solchen Komplexität umgesetzt hatte. Im Nachhinein musste ich das Flussdiagramm nochmals grundlegend anpassen. Der Grund dafür war, dass im ursprünglichen Entwurf gewisse Stränge fehlten oder die Umsetzung einzelner Teile zu komplex oder gar nicht realisierbar war, wie ich es mir ursprünglich vorgestellt hatte.
+
+Dennoch war die Erstellung des Flussdiagramms eine nützliche Übung, da ich dadurch einen groben Überblick darüber gewinnen konnte, wie mein Projekt funktionieren sollte.
 
 Hier im in Anschluss mein finales Flussdiagramm:
 ![Screenflow](https://github.com/user-attachments/assets/68f54622-40ea-4e81-a5e2-a8ce419c0432)
@@ -170,11 +164,12 @@ Hier im in Anschluss mein finales Flussdiagramm:
 ---
 
 ## 🔧Komponentenplan
-Einen Komponentenplan zu erstellen stellte sich als nicht ganz so intuitiv dar wie ich mir dies Anfangs erhofft habe. Gerade auch deswegen, da ich für dieses Projekt mit mehreren PHP Files und Tabellen gearbeitet habe, was die Verarbeitung/Schematische Darstellung verkompliziert hat.
+Einen Komponentenplan zu erstellen stellte sich als weniger intuitiv heraus, als ich es mir anfangs erhofft hatte. Das lag insbesondere daran, dass ich für dieses Projekt mit mehreren PHP-Dateien und Datenbanktabellen gearbeitet habe, was die Verarbeitung und die schematische Darstellung erheblich verkomplizt hat.
+
 ![Komponentenplan](https://github.com/user-attachments/assets/e54be341-70cc-4e0a-91e9-0666d4949830)
 *Verbindungen und Protokolle zwischen haptischen Komponenten und digitalen Modulen.*
 
-In einem ersten Schritt war mir nicht bewusst, wieviel komplexer sich das Projekt gestalten würde, wenn ich mehrere Tabellen verwende, welche Daten aus unterschiedlichen Quellen ziehen. Da ich die Auslesung der Daten und Zusammenarbeit und Auswertung in der DB komplett selbstständig umsetzen musste, forderte dies dementsprechend viele Trial & Error Versuche, bis alles sauber miteinander kommunizierte.
+Zu Beginn war mir nicht bewusst, wie viel komplexer sich das Projekt gestaltet, wenn mehrere Tabellen eingesetzt werden, die Daten aus unterschiedlichen Quellen beziehen. Da ich die Datenstruktur sowie das Zusammenspiel und die Auswertung innerhalb der Datenbank vollständig selbst umsetzen musste, waren zahlreiche Trial-and-Error-Versuche notwendig, bis alle Komponenten zuverlässig miteinander kommunizierten.
 
 Untenstehend die finalisierte Tabellenstruktur:
 <img width="1058" alt="Bildschirmfoto 2025-06-15 um 21 59 47" src="https://github.com/user-attachments/assets/88e7f6ba-4d42-43eb-a86e-efd0e5f52c20" />
@@ -259,11 +254,12 @@ Diese strukturierte Trennung zwischen Planung (`schedule`) und tatsächlicher Au
 ## 🧩Steckschema
 
 Das Steckschema für das Gadget sollte erst nur über ein halbes Breadboard laufen, jedoch war der Platz zu begrenzt, wodurch ich auf ein ganzes Breadboard umsteigen musste.
-Ich nutzte anschliessend das zweite Breadboard als Erhöhung für meine Reed-Magnet Schalter, da die  ursprüngliche Idee mit dem Löten der Kabel sich, schwieriger anstellte als gedacht (siehe [Innenleben des Gadget](#innenleben-des-gadget)). Wenn man sich die Entfernung der Sensoren genau ansieht fragt man sich, warum sind diese so weit von der Fachöffnung entfernt? Ursprünglich waren diese direkt am Fach Entrypoint, aber da die Fächer jeweils nur eine Länge von 3cm hatten, hat das Gadget die ganze Zeit die Wand gemessen, obwohl die Definierung im mc.ino so gesetzt war das der Distanzsensor, jeweils nur bis knapp 3cm messen sollte.
-Daraufhin musste ich mit einem debug feststellen, dass die effektive Distanzmessung der Sensoren verschoben ist, bzw. die gemessenen Distanzwerte um etwa 3cm verschoben waren und jeweils der 0 Punkt der Messung erst bei ca 3cm war. Somit habe ich die Distanzsensoren wie auf dem Steckschema platziert um die Distanz der Messung auszugleichen. (Dieser Bug der Sensoren war bekannt, auch von Jan Fiess schon festgestellt). Jedoch nicht weiter schlimm da die Distanzwerte keine effektive Relevanz für dieses Projekt haben.
+Ich nutzte anschliessend das zweite Breadboard als Erhöhung für meine Reed-Magnet-Schalter, da die ursprüngliche Idee mit dem Löten der Kabel sich schwieriger anstellte als gedacht (siehe [Innenleben des Gadget](#innenleben-des-gadget)). Wenn man sich die Entfernung der Sensoren genau ansieht, fragt man sich, warum diese so weit von der Fachöffnung entfernt sind. Ursprünglich waren diese direkt am Fach-Entrypoint, aber da die Fächer jeweils nur eine Länge von 3 cm hatten, hat das Gadget die ganze Zeit die Wand gemessen, obwohl die Definierung im mc.ino so gesetzt war, dass der Distanzsensor jeweils nur bis knapp 3 cm messen sollte.
+Daraufhin musste ich mit einem Debug feststellen, dass die effektive Distanzmessung der Sensoren verschoben ist, bzw. die gemessenen Distanzwerte um etwa 3 cm verschoben waren und jeweils der Nullpunkt der Messung erst bei ca. 3 cm war. Somit habe ich die Distanzsensoren wie auf dem Steckschema platziert, um die Distanz der Messung auszugleichen. (Dieser Bug der Sensoren war bekannt, auch von Jan Fiess schon festgestellt.) Jedoch nicht weiter schlimm, da die Distanzwerte keine effektive Relevanz für dieses Projekt haben.
 
 ![Steckplan] <img width="690" alt="Breadboard_PILLO" src="https://github.com/user-attachments/assets/a648950c-0470-4d46-a3ad-abfe32ca8ebb" />
 *Das Breadboard-Schema zeigt den Aufbau mit ESP32 und Sensoren.*
+
 
 ---
 
@@ -280,12 +276,12 @@ Der Umsetzungsprozess hat sich anfangs schwierig gestaltet. In einem ersten Schr
 
 <img width="1053" alt="Bildschirmfoto 2025-06-15 um 23 51 21" src="https://github.com/user-attachments/assets/2c431c8c-7d6d-43a3-a504-63704058c96a" />
 
-Ich musste, aber schnell feststellen, das ich nicht wirklich begabt bin im Löten deswegen entschied ich mich für eine andere Lösung. Indem ich die Breadboards anreihte wie man dies auf dem Bild unterhalb erkennen kann. Für das oben referenzierte Design hätte ich keine Breadboards verwenden dürfen, da das Spacing nicht ausgereicht hätte. 
+Ich musste aber schnell feststellen, dass ich nicht wirklich begabt bin im Löten, deswegen entschied ich mich für eine andere Lösung, indem ich die Breadboards anreihte, wie man dies auf dem Bild unterhalb erkennen kann. Für das oben referenzierte Design hätte ich keine Breadboards verwenden dürfen, da das Spacing nicht ausgereicht hätte.
 
 Ich musste einen Weg finden, wie ich die Umsetzung möglichst simpel und so detailgetreu wie möglich mit meinem vorhandenen Steckplan umsetzen konnte.
 Folgende Sachen musste ich hierbei beachten:
 
-- Es durfte nicht allzu komplex sein, da meine 3D Modellierung Skills noch nicht 100% perfekt sind
+- Es durfte nicht allzu komplex sein, da meine 3D-Modellierungsskills noch nicht 100% perfekt sind
 - Beide Breadboards mussten hineinpassen
 - Das Fach muss den Magnetsensor triggern, damit das Gerät funktioniert
 
@@ -294,12 +290,12 @@ Mein gefundener Lösungsansatz sah wie folgt aus im Querschnitt
 ![IMG_0273](https://github.com/user-attachments/assets/f0d889fd-2fb6-4e72-9583-3f2498481a5a)
 ![IMG_0274](https://github.com/user-attachments/assets/6084aaf5-380d-418f-87d8-430ba33459b5)
 
-In einem nächsten Schritt machte ich mich an die Umsetzung in 3D, hierfür benutzte ich Hauptsächlich Blender. Ich nutzte jeweils die Vermassungen der Breadboards, als Referenz im Innenleben um detailgetreu zu modellieren. Hier ein paar Ausschnitte des 3D Modells.
+In einem nächsten Schritt machte ich mich an die Umsetzung in 3D, hierfür benutzte ich Hauptsächlich Blender. Ich nutzte jeweils die Vermassungen der Breadboards, als Referenz im Innenleben um detailgetreu zu modellieren. Hier ein paar Ausschnitte des 3D Modell Gestaltungsprozess:
 
 <img width="1203" alt="Bildschirmfoto 2025-06-15 um 23 58 09" src="https://github.com/user-attachments/assets/1db89306-fb1e-42b5-83c1-1187d5b2c4cb" /><img width="1214" alt="Bildschirmfoto 2025-06-15 um 23 57 56" src="https://github.com/user-attachments/assets/4ddffaff-3a52-48de-9d70-dc1b3a1e13e8" />
 <img width="1216" alt="Bildschirmfoto 2025-06-15 um 23 58 03" src="https://github.com/user-attachments/assets/a46266b0-9b8a-4c4d-97de-65691c0d5f4c" />
 
-In einem nächsten Schritt ging es an dern Druckprozess. ich habe zuhause einen 3D Drucker (Bambulab X1C), welchen ich für die Umsetzung verwendet habe.
+In einem nächsten Schritt ging es an den Druckprozess. ich habe zuhause einen 3D Drucker (Bambulab X1C), welchen ich für die Umsetzung verwendet habe.
 Da ich jedoch bis anhin selten Projekte realisierte mit Überhang, musste ich meine Entwürfe einige Male über Board werfen, da diese zu viel Zeit und Material in Anspruch nahmen.
 
 Im Endeffekt entschied ich mich für folgenden Prozess:
