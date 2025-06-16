@@ -69,7 +69,8 @@ https://docs.google.com/document/d/1ege301V0So02RBs3WJ28wAcD5htAfxtaAjiDvV3Bwis/
 
 ## 🧩Steckschema
 
-![Steckplan](https://github.com/user-attachments/assets/b0e210c0-8eb5-4ff1-9236-5de2e835f993)
+![Steckplan](<img width="690" alt="Breadboard_PILLO" src="https://github.com/user-attachments/assets/807c7882-7482-4df5-aa86-bde5bd5ed6d0" />
+)
 *Das Breadboard-Schema zeigt den Aufbau mit ESP32 und Sensoren.*
 
 ---
