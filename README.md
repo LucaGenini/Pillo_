@@ -45,7 +45,7 @@ Innert der aktuellen Woche sieht man auch immer den aktuellen Plan, welches Medi
 
 ## 🔁 Reproduzierbarkeit
 
-Diese Schritt-für-Schritt-Anleitung hilft dir, das Projekt vollständig nachzubauen – vom Hardwareaufbau bis zur Webvisualisierung.
+Diese Schritt-für-Schritt-Anleitung hilft dir, das Projekt vollständig nachzubauen – vom Hardwareaufbau bis zur Webvisualisierung inklusive lokaler Datenverarbeitung.
 
 ---
 
@@ -59,80 +59,103 @@ Für den Bau der Pillo-Box wird folgende Hardware benötigt:
 - **1× OLED-Display (I2C)** (zur Anzeige der nächsten Einnahme)
 - **1× ganzes Breadboard** (für Hauptverkabelung)
 - **1× kleineres Breadboard oder Erweiterung** (für Sensorhalterungen)
-- Diverse **Jumper-Kabel**, **Widerstände**, ggf. **3D-gedrucktes Gehäuse** (optional)
+- Diverse **Jumper-Kabel**, ggf. **3D-gedrucktes Gehäuse**
 
-Hinweis: Der Abstand der Distanzsensoren zur Fachöffnung muss korrekt abgestimmt sein (siehe Abschnitt [Steckschema](#steckschema)).
+👉 Hinweis: Die VL6180X-Sensoren müssen ca. **3 cm von der Fachöffnung entfernt** montiert werden, um zuverlässige Werte zu liefern (siehe Abschnitt [🧩 Steckschema](#steckschema)).
 
 ---
 
 ### 2. 🔌 Schaltplan und Aufbau
 
 - Baue den Schaltkreis gemäss dem Steckschema auf. Achte dabei besonders auf:
-  - **I2C-Kommunikation** der Sensoren (gemeinsame SDA/SCL-Leitungen)
-  - **XSHUT-Pins**, um die Sensoren mit individuellen I2C-Adressen anzusprechen
-  - **Reedkontakte** zur Erkennung von Fachöffnungen
-- Fixiere die Sensoren in richtiger Position im Gehäuse (ca. 3 cm vom Fach entfernt), um korrekte Distanzmessungen zu ermöglichen.
+  - **I2C-Verbindung** (gemeinsames SDA/SCL für Display und Sensoren)
+  - **XSHUT-Pins**, um individuelle I2C-Adressen für beide Distanzsensoren zu setzen
+  - **GPIO-Pins** für die Reedkontakte (Öffnungserkennung)
+- Die Sensoren und das OLED-Display werden direkt mit dem ESP32 verbunden.
+- Das Gerät benötigt Strom über USB oder Netzteil.
 
 → Details findest du im Abschnitt [🧩 Steckschema](#steckschema)
 
 ---
 
-### 3. ⚙️ Firmware flashen
+### 3. ⚙️ Firmware auf den ESP32 laden
 
-- Öffne die Datei `mc.ino` in der **Arduino IDE** oder **PlatformIO**
-- Trage deine **WLAN-Zugangsdaten** im Sketch ein (z. B. `ssid`, `pass`)
-- Installiere nötige Bibliotheken:
+- Öffne `mc.ino` in der **Arduino IDE**
+- Trage deine WLAN-Zugangsdaten im Sketch ein (`ssid`, `pass`)
+- Stelle sicher, dass folgende Bibliotheken installiert sind:
   - `Adafruit_VL6180X`
   - `Adafruit_SSD1306`
+  - `Adafruit_GFX`
   - `RTClib`
-  - `WiFi` (ESP32-kompatibel)
+  - `WiFi` (ESP32-Version)
   - `Arduino_JSON`
-- Schliess den ESP32 an und flashe die Firmware via USB
+- Flashe das Skript via USB-C auf den ESP32-C6
 
-Nach dem Flashen zeigt das OLED-Display die nächste geplante Einnahme an und der ESP32 sendet Signale an den Server, wenn Sensoren ausgelöst werden.
+Nach dem Start verbindet sich der ESP32 mit dem WLAN, zeigt die **nächste geplante Einnahme** auf dem OLED an und überwacht kontinuierlich die Sensoren. Bei einer erkannten Einnahme sendet er die Daten an den Server.
 
 ---
 
-### 4. 🌐 Server aufsetzen (lokal oder Raspberry Pi)
+### 4. 🌐 Server aufsetzen 
 
-- Installiere einen Webserver mit **PHP 8+** und **MySQL/MariaDB**
-  - z. B. über XAMPP (lokal) oder LAMP-Stack auf dem Raspberry Pi
-- Lege eine Datenbank an (z. B. `pillo_db`) und importiere die SQL-Datei mit den Tabellenstrukturen `medication_schedule` und `medication_log`
-- Lade folgende PHP-Skripte in dein Serververzeichnis:
-  - `load.php` → stellt alle Daten bereit (JSON)
-  - `submit_medikament.php` → verarbeitet Einnahmelogs
-  - `get_next.php` → liefert die nächste geplante Einnahme
-  - `unload.php` → generiert Statistikdaten
-  - `config.php` → enthält Zugangsdaten zur DB
+Setze folgende Komponenten auf:
 
-> Achte darauf, dass der ESP32 die IP-Adresse deines Servers erreichen kann (Port 80, lokal oder via WLAN).
+- **Webserver mit PHP**
+- **MySQL/MariaDB**
+
+#### 📦 Datenbank einrichten
+
+1. Erstelle eine neue Datenbank, z. B. `pillo_db`
+2. Importiere die Tabellenstruktur für:
+   - `medication_schedule` (Pläne)
+   - `medication_log` (Ereignisse)
+
+mehr Informationen zum aufsetzen der DB findest du hier -> [🔧 Komponentenplan](#komponentenplan)
+
+#### 📂 PHP-Dateien ins Serververzeichnis legen
+
+- `config.php` – zentrale DB-Verbindung
+- `load.php` – nimmt POST-Daten vom ESP32 entgegen → `INSERT INTO medication_log`
+- `get_next.php` – liefert dem ESP32 die nächste geplante Einnahme → `SELECT FROM medication_schedule`
+- `submit_medikament.php` – verarbeitet neue Pläne aus dem Webinterface → `INSERT INTO medication_schedule`
+- `unload.php` – stellt aggregierte Statistikdaten für die Website bereit
+
+> 🔐 Der ESP32 muss via IP Zugriff auf den Server haben (HTTP-Port 80, WLAN), z. B. `http://192.165.1.535/pillo/load.php`
 
 ---
 
 ### 5. 🖥️ Webinterface starten
 
-- Kopiere die Dateien `index.html`, `style.css` und `loading1.js` in das gleiche Verzeichnis wie die PHP-Skripte
-- Rufe die Webseite über den Browser auf (z. B. `http://192.168.1.XX/pillo/index.html`)
-- Über das Interface kannst du:
-  - die geplanten Einnahmen prüfen
-  - Einnahmeverläufe der letzten Wochen/Monate einsehen
-  - Live-Visualisierungen nutzen (z. B. Matrix- und Barcharts)
+- Kopiere folgende Dateien ins gleiche Serververzeichnis:
+  - `index.html` – Hauptansicht der Webanwendung
+  - `style.css` – Styling
+  - `loading3.js` – JavaScript-Logik (z. B. Daten laden & Diagramme rendern)
+- Rufe die Website im Browser auf, z. B.:  
+  `http://192.168.1.50/pillo/index.html`
+
+#### Die Website ermöglicht:
+
+- **Visualisierung** deiner Einnahmehistorie (Matrix, Wochen- & Monatscharts)
+- **Anzeige der aktuellen Woche und nächsten Einnahme**
+- **Manuelle Planänderung über Pop-up-Felder**
 
 ---
 
-### 6. 📈 Test & Debugging
+### 6. ✅ Test & Debugging
 
-- Öffne ein Fach → wird korrekt erkannt?
-- Entnehme ein Objekt → wird die Distanzmessung registriert?
-- Überprüfe auf der Website, ob Einträge im Log auftauchen
-- Analysiere die Anzeige auf dem OLED (Uhrzeit, Medikament, Fach)
-- Optional: Öffne `unload.php` direkt im Browser → bekommst du korrektes JSON?
+Folgende Tests helfen bei der Inbetriebnahme:
+
+- Objekt entfernen → wird die Messung korrekt registriert und im Frontend angezeigt?
+- OLED zeigt die geplante Einnahme?
+- `unload.php` liefert valides JSON im Browser?
+- Diagramme und Statusfarben erscheinen korrekt?
+- Keine doppelten Logs bei erneutem Öffnen?
 
 ---
 
-### ✅ Systembereit
+### 🧪 Systemstatus: Lokal & unabhängig
 
-Wenn alle Module wie gewünscht funktionieren, kannst du das System im Alltag testen. Der ESP32 sendet zuverlässig alle Einnahmeereignisse an den Server, der diese speichert und visuell auswertet. So entsteht ein datengestütztes Feedbacksystem zur Medikamenteneinnahme.
+Das System arbeitet vollständig **lokal**, solange sich der Server, ESP32 und Browser im selben WLAN befinden. Es werden **keine externen Dienste oder Cloud-Plattformen** benötigt. Somit bleibt Pillo datenschutzfreundlich, unabhängig und portabel – ideal für den Heimgebrauch oder medizinische Prototypentests.
+
 
 ---
 
