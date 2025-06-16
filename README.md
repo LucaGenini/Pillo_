@@ -43,7 +43,7 @@ Innert der aktuellen Woche sieht man auch immer den aktuellen Plan, welches Medi
 
 ---
 
-## 🔁 Reproduzierbarkeit
+## 🔁Reproduzierbarkeit
 
 Diese Schritt-für-Schritt-Anleitung hilft dir, das Projekt vollständig nachzubauen – vom Hardwareaufbau bis zur Webvisualisierung inklusive lokaler Datenverarbeitung.
 
