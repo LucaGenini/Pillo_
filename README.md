@@ -277,7 +277,7 @@ Hier findest du noch eine kleine Präsentation zu meinem Pillo Gadget.
 
 ---
 
-## ⚙️Umsetzungsprozess
+## ⚙️ Umsetzungsprozess
 
 Der Umsetzungsprozess hat sich anfangs schwierig gestaltet. In einem ersten Schritt habe ich folgenden Bauplan für mein Gadget vorgesehen. 
 
